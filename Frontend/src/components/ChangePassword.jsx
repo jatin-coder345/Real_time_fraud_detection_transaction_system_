@@ -69,8 +69,8 @@ const ChangePassword = () => {
       <aside className="sidebar">
         <div className="user-section">
           <FaUserCircle className="user-icon" />
-          <h3>Pabitra Swain</h3>
-          <p>Premium Member</p>
+          <h3></h3>
+          <p></p>
         </div>
 
         <nav className="nav-menu">
