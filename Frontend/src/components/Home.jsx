@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import scamDashboard from "../assets/scam_dashboard.png";
+import logo from "../assets/logo.jpeg"; // ✅ Import your logo
 import Login from "./Login";
 import "./Home.css";
 
@@ -89,14 +90,16 @@ const Home = () => {
       {/* ===== Navbar ===== */}
       <nav className="navbar">
         <div className="logo">
-          <span className="material-icons">shield</span>
-          Fraud Detection System
+          <img src={logo} alt="Company Logo" className="logo-img" /> 
+          <span>Fraud Detection System</span>
         </div>
         <div className="nav-links">
           <button className="nav-btn" onClick={() => setShowLogin(true)}>
             Login
           </button>
-          <button className="nav-btn" onClick={() => navigate("/signup")}>Sign Up</button>
+          <button className="nav-btn" onClick={() => navigate("/signup")}>
+            Sign Up
+          </button>
         </div>
       </nav>
 
@@ -132,7 +135,7 @@ const Home = () => {
         <DynamicFraudChart />
       </section>
 
-      {/* ===== How Our System Works (Redesigned) ===== */}
+      {/* ===== How Our System Works ===== */}
       <section className="system-section">
         <h2>How Our System Works</h2>
         <p className="section-subtext">

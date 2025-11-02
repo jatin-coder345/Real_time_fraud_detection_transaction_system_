@@ -164,7 +164,7 @@ const SignUp = () => {
               {errors.phone && <span className="error">{errors.phone}</span>}
             </div>
 
-            <div className="password-container">
+            {/* <div className="password-container"> */}
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
@@ -181,7 +181,7 @@ const SignUp = () => {
               {errors.password && (
                 <span className="error">{errors.password}</span>
               )}
-            </div>
+            {/* </div> */}
             <div className="input-group">
   <select
     name="role"

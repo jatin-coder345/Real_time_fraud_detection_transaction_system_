@@ -409,3 +409,140 @@ html, body {
   flex-direction: column;
   height: 100%;
 }
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.logo-img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.logo-img:hover {
+  transform: scale(1.1);
+}
+
+/* ===== Stats Section ===== */
+.stats-section {
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #7bc7df;
+  min-height: 70vh;
+  font-family: "Poppins", sans-serif;
+}
+
+/* ===== Header ===== */
+.stats-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.stats-header h2 {
+  font-size: 2rem;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.stats-subtext {
+  font-size: 1rem;
+  color: #64748b;
+}
+
+/* ===== Container ===== */
+.stats-container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* ===== Individual Cards ===== */
+.stat-card {
+  flex: 0 1 260px;          /* smaller width */
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 14px;
+  padding: 1.2rem 1.4rem;   /* reduced padding */
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(8px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+
+/* ===== Icon ===== */
+.stat-icon {
+  font-size: 3rem;
+  color: #3b82f6;
+  flex-shrink: 0;
+}
+
+/* ===== Text Info ===== */
+.stat-info h3 {
+  font-size: 1.2rem;
+  margin: 0;
+  color: #1f2937;
+}
+
+.stat-number {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #111827;
+  margin: 0.2rem 0;
+}
+
+/* ===== Trends ===== */
+.trend {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.trend i {
+  font-size: 1rem;
+}
+
+.trend.positive {
+  color: #16a34a;
+}
+
+.trend.negative {
+  color: #dc2626;
+}
+
+/* ===== Footer ===== */
+.stats-footer {
+  margin-top: 2.5rem;
+  font-size: 0.95rem;
+  color: #6b7280;
+  text-align: center;
+}
+
+.stats-footer strong {
+  color: #111827;
+}
+

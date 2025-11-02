@@ -13,6 +13,17 @@ import {
   Cell,
   Legend,
 } from "recharts";
+import {
+  FaTachometerAlt,
+  FaUsers,
+  FaPlug,
+  FaCog,
+  FaSignOutAlt,
+  FaChartPie,
+  FaShieldAlt,
+  FaUserShield,
+  FaLifeRing,
+} from "react-icons/fa";
 import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
@@ -52,9 +63,9 @@ const AdminDashboard = () => {
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setAdmin(JSON.parse(storedUser)); // Parse JSON object
+      setAdmin(JSON.parse(storedUser));
     } else {
-      navigate("/login"); // redirect if not logged in
+      navigate("/login");
     }
   }, [navigate]);
 
@@ -83,15 +94,34 @@ const AdminDashboard = () => {
     <div className="admin-dashboard fullscreen">
       {/* ===== Sidebar ===== */}
       <aside className="admin-sidebar fullscreen-sidebar">
-        <h2 className="logo">Fraud Detection</h2>
-        <h2 className="logo"> Admin : {admin ? admin.firstName : "Admin"}</h2>
+        <div className="sidebar-header">
+          <FaShieldAlt className="sidebar-logo-icon" />
+          <h2 className="logo-text">Fraud Detection</h2>
+        </div>
+
+        <h3 className="admin-name">
+          <FaUserShield /> Admin: {admin ? admin.firstName : "Admin"}
+        </h3>
+
         <ul className="menu">
-          <li className="active">Dashboard</li>
-          <li onClick={() => navigate("/Ausers")}>Users</li>
-          <li onClick={() => navigate("/Aapis")}>APIs</li>
-          <li onClick={() => navigate("/Ahelp")}>Help & Support</li>
-          <li onClick={() => navigate("/Asettings")}>Settings</li>
-          <li onClick={handleLogout}>Logout</li>
+          <li className="active" onClick={() => navigate("/Adashboard")}>
+            <FaTachometerAlt className="menu-icon" /> Dashboard
+          </li>
+          <li onClick={() => navigate("/Ausers")}>
+            <FaUsers className="menu-icon" /> Users
+          </li>
+          <li onClick={() => navigate("/Aapis")}>
+            <FaPlug className="menu-icon" /> APIs
+          </li>
+          <li onClick={() => navigate("/Ahelp")}>
+            <FaLifeRing className="menu-icon" /> Help & Support
+          </li>
+          <li onClick={() => navigate("/Asettings")}>
+            <FaCog className="menu-icon" /> Settings
+          </li>
+          <li onClick={handleLogout}>
+            <FaSignOutAlt className="menu-icon" /> Logout
+          </li>
         </ul>
       </aside>
 
@@ -105,7 +135,7 @@ const AdminDashboard = () => {
         </header>
 
         {/* ===== Top Stats Cards ===== */}
-        <section className="stats-section">
+        <section className="stats-sectionn">
           <div className="stat-card users">
             <h3>Total Users</h3>
             <p>{stats.totalUsers}</p>
@@ -150,7 +180,10 @@ const AdminDashboard = () => {
                   label
                 >
                   {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
                   ))}
                 </Pie>
                 <Tooltip />

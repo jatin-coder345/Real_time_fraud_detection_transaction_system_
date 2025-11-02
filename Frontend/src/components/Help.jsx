@@ -72,12 +72,12 @@ const Help = () => {
           <a href="/Help" className="active">
             <FaQuestionCircle /> Help & Support
           </a>
-          <a href="/Users">
+          {/* <a href="/Users">
             <FaUsers /> Users
           </a>
           <a href="/APIs">
             <FaPlug /> APIs
-          </a>
+          </a> */}
           <a href="/Settings">
             <FaCog /> Settings
           </a>

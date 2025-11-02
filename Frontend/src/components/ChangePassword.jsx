@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
   FaChartBar,
@@ -6,13 +7,11 @@ import {
   FaCog,
   FaTachometerAlt,
   FaUserCircle,
-  FaTable,
   FaSignOutAlt,
   FaQuestionCircle,
-  FaUsers,
-  FaPlug,
   FaLock,
 } from "react-icons/fa";
+import cpassword from "../assets/cpassword.jpeg"; // ✅ Background image import
 import "./ChangePassword.css";
 
 const ChangePassword = () => {
@@ -21,6 +20,7 @@ const ChangePassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -56,7 +56,7 @@ const ChangePassword = () => {
     }
   };
 
-   const handleLogout = () => {
+  const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
       localStorage.clear();
       navigate("/login");
@@ -65,12 +65,11 @@ const ChangePassword = () => {
 
   return (
     <div className="dashboard-container">
-      {/* Sidebar (same as Reports.jsx) */}
+      {/* Sidebar */}
       <aside className="sidebar">
         <div className="user-section">
           <FaUserCircle className="user-icon" />
-          <h3></h3>
-          <p></p>
+          <h3>{loginId || "User"}</h3>
         </div>
 
         <nav className="nav-menu">
@@ -78,17 +77,20 @@ const ChangePassword = () => {
           <a href="/Transactions"><FaExchangeAlt /> Transactions</a>
           <a href="/Reports"><FaChartBar /> Reports</a>
           <a href="/Help"><FaQuestionCircle /> Help & Support</a>
-          <a href="/Users"><FaUsers /> Users</a>
-          <a href="/APIs"><FaPlug /> APIs</a>
           <a href="/Settings"><FaCog /> Settings</a>
           <a href="/ChangePassword" className="active"><FaLock /> Change Password</a>
         </nav>
 
-        <button className="logout-btn" onClick={handleLogout}><FaSignOutAlt /> Logout</button>
+        <button className="logout-btn" onClick={handleLogout}>
+          <FaSignOutAlt /> Logout
+        </button>
       </aside>
 
       {/* Main Content */}
-      <main className="change-password-page">
+      <main
+        className="change-password-page"
+        style={{ backgroundImage: `url(${cpassword})` }}
+      >
         <div className="change-password-container">
           <h2>Change Password</h2>
           <form onSubmit={handleChangePassword}>

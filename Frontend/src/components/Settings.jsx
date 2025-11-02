@@ -64,8 +64,8 @@ const Settings = () => {
           <a href="/Transactions"><FaExchangeAlt /> Transactions</a>
           <a href="/Reports"><FaChartBar /> Reports</a>
           <a href="/Help"><FaQuestionCircle /> Help & Support</a>
-          <a href="/Users"><FaUsers /> Users</a>
-          <a href="/APIs"><FaPlug /> APIs</a>
+          {/* <a href="/Users"><FaUsers /> Users</a>
+          <a href="/APIs"><FaPlug /> APIs</a> */}
           <a href="/Settings" className="active"><FaCog /> Settings</a>
           <a href="/ChangePassword"><FaLock /> Change Password</a>
         </nav>

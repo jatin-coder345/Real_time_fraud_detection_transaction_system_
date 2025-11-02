@@ -169,12 +169,12 @@ const UserDashboard = () => {
           <li className={getActiveMenu() === "help" ? "active" : ""} onClick={() => handleMenuClick("help", "/help")}>
             <FaQuestionCircle /> Help & Support
           </li>
-          <li className={getActiveMenu() === "users" ? "active" : ""} onClick={() => handleMenuClick("users", "/users")}>
+          {/* <li className={getActiveMenu() === "users" ? "active" : ""} onClick={() => handleMenuClick("users", "/users")}>
             <FaUsers /> Users
           </li>
           <li className={getActiveMenu() === "apis" ? "active" : ""} onClick={() => handleMenuClick("apis", "/apis")}>
             <FaPlug /> APIs
-          </li>
+          </li> */}
           <li className={getActiveMenu() === "settings" ? "active" : ""} onClick={() => handleMenuClick("settings", "/settings")}>
             <FaCog /> Settings
           </li>

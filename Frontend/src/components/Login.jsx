@@ -81,7 +81,7 @@ const Login = ({ closePopup }) => {
 
           <div className="form-group">
             <label>Password</label>
-            <div className="password-container">
+            {/* <div className="password-container"> */}
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
@@ -89,13 +89,13 @@ const Login = ({ closePopup }) => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <span
+              {/* <span
                 className="material-icons toggle-password"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? "visibility_off" : "visibility"}
-              </span>
-            </div>
+              </span> */}
+            {/* </div> */}
           </div>
 
           <button type="submit" className="login-btn">
