@@ -15,6 +15,8 @@ import Ausers from "./components/Ausers";
 import Aapis from "./components/Aapis";
 import Ahelp from "./components/Ahelp";
 import Asettings from "./components/Asettings";
+import  AdminLiveTransactions from "./components/AdminLiveTransactions";
+
 
 
 
@@ -45,7 +47,7 @@ function App() {
         {/* Transactions Page */}
       <Route path="/transactions" element={<Transactions />} />
       
-        {/* Fallback for unknown routes */}
+        Fallback for unknown routes
         <Route path="*" element={<Navigate to="/home" replace />} />
 
         <Route path="/change-password" element={<ChangePassword />} />
@@ -59,6 +61,7 @@ function App() {
         <Route path="/Aapis" element={<Aapis />} />
         <Route path="/ahelp" element={<Ahelp />} />
         <Route path="/asettings" element={<Asettings />} />
+        <Route path="/AdminLiveTransactions" element={<AdminLiveTransactions />} />
 
         
       </Routes>

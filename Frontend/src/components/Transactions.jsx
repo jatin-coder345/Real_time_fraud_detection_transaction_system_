@@ -68,6 +68,10 @@
 
 
 import React, { useState } from "react";
+import UserTransactions from "./UserTransactions";
+
+
+
 import {
   FaChartBar,
   FaExchangeAlt,
@@ -127,6 +131,11 @@ const Transactions = () => {
     },
   ];
 
+   const userId = localStorage.getItem("userId"); // or from logged-in user context
+
+  
+    
+
   const filteredTransactions = transactions.filter(
     (txn) =>
       txn.id.toLowerCase().includes(search.toLowerCase()) ||
@@ -165,12 +174,20 @@ const Transactions = () => {
         <button className="logout-btn" onClick={handleLogout}><FaSignOutAlt /> Logout</button>
       </aside>
 
+      
       {/* === MAIN CONTENT === */}
       <main className="transactions-page">
         <header className="transactions-header">
           <h1>💳 Transactions Overview</h1>
           <p>Track, analyze, and manage all transactions in real-time.</p>
         </header>
+
+
+        <div>
+      <UserTransactions />
+    </div>
+
+        
 
         {/* === STATS CARDS === */}
         <div className="txn-stats">

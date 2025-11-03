@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AdminDashboard.css"; // ✅ reuse same styles
@@ -49,8 +48,12 @@ const Ausers = () => {
           <li className="active" onClick={() => navigate("/Ausers")}>
             Users
           </li>
-          <li onClick={() => navigate("/Aapis")}>Apis</li>
-          <li onClick={() => navigate("/Ahelp")}>Help&Support</li>
+          {/* ✅ NEW Live Transactions Section */}
+          <li onClick={() => navigate("/AdminLiveTransactions")}>
+            Live Transactions
+          </li>
+          <li onClick={() => navigate("/Aapis")}>APIs</li>
+          <li onClick={() => navigate("/Ahelp")}>Help & Support</li>
           <li onClick={() => navigate("/Asettings")}>Settings</li>
           <li onClick={handleLogout}>Logout</li>
         </ul>
@@ -83,7 +86,9 @@ const Ausers = () => {
                   <tr key={user._id}>
                     <td>{index + 1}</td>
                     <td>{user.userId}</td>
-                    <td>{user.firstName} {user.lastName}</td>
+                    <td>
+                      {user.firstName} {user.lastName}
+                    </td>
                     <td>{user.email || user.loginId}</td>
                     <td className={user.role === "admin" ? "fraud" : "legit"}>
                       {user.role === "admin" ? "Admin" : "User"}

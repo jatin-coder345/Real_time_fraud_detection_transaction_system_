@@ -13,7 +13,6 @@ const Aapis = () => {
     const fetchFakeApis = async () => {
       try {
         setLoading(true);
-        // Simulate network delay
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         const fakeApiData = [
@@ -82,9 +81,13 @@ const Aapis = () => {
         <ul className="menu">
           <li onClick={() => navigate("/Admindashboard")}>Dashboard</li>
           <li onClick={() => navigate("/Ausers")}>Users</li>
-          <li className="active" onClick={() => navigate("/Aapis")}>
+           <li onClick={() => navigate("/AdminLiveTransactions")}>
+            Live Transactions
+          </li>
+          <li onClick={() => navigate("/Aapis")} className="active">
             APIs
           </li>
+         
           <li onClick={() => navigate("/Ahelp")}>Help & Support</li>
           <li onClick={() => navigate("/Asettings")}>Settings</li>
           <li onClick={handleLogout}>Logout</li>
@@ -115,7 +118,6 @@ const Aapis = () => {
                     <th>Endpoint</th>
                     <th>Created By</th>
                     <th>Status</th>
-                    {/* <th>Actions</th> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -135,10 +137,6 @@ const Aapis = () => {
                           {api.isActive ? "Active" : "Inactive"}
                         </span>
                       </td>
-                      {/* <td className="actions">
-                        <button className="view-btn">View</button>
-                        <button className="delete-btn">Delete</button>
-                      </td> */}
                     </tr>
                   ))}
                 </tbody>

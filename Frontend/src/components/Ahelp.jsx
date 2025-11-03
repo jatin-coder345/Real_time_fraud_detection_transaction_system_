@@ -22,6 +22,9 @@ const Ahelp = () => {
         <ul className="menu">
           <li onClick={() => navigate("/Admindashboard")}>Dashboard</li>
           <li onClick={() => navigate("/Ausers")}>Users</li>
+            <li onClick={() => navigate("/AdminLiveTransactions")}>
+            Live Transactions
+          </li>
           <li onClick={() => navigate("/Aapis")}>APIs</li>
           <li className="active" onClick={() => navigate("/Ahelp")}>
             Help & Support

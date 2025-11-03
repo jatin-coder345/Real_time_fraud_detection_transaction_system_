@@ -1,16 +1,18 @@
+// models/Transaction.js
 import mongoose from "mongoose";
 
 const transactionSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // ✅ reference to User
   amount: { type: Number, required: true },
   type: { type: String, enum: ["credit", "debit"], required: true },
-  description: String,
-  status: { type: String, enum: ["pending", "completed", "failed"], default: "completed" },
+  description: { type: String, default: "" },
+  status: {
+    type: String,
+    enum: ["pending", "completed", "failed"],
+    default: "completed",
+  },
+  fraud_detected: { type: Boolean, default: false },
   date: { type: Date, default: Date.now },
 });
 
-// Create the model
-const Transaction = mongoose.model("Transaction", transactionSchema);
-
-// Export it as default
-export default Transaction;
+export default mongoose.model("Transaction", transactionSchema);

@@ -23,10 +23,11 @@ const Login = ({ closePopup }) => {
 
       if (response.ok) {
         // Save user info and token
+        console.log(data);
         localStorage.setItem(
           "user",
           JSON.stringify({
-            id: data.user.id,
+            _id: data.user._id,
             loginId: data.user.loginId || data.user.email,
             firstName: data.user.firstName,
             role: data.user.role,

@@ -23,6 +23,7 @@ import {
   FaShieldAlt,
   FaUserShield,
   FaLifeRing,
+  FaExchangeAlt, // 🔥 Added for Live Transactions
 } from "react-icons/fa";
 import "./AdminDashboard.css";
 
@@ -110,6 +111,12 @@ const AdminDashboard = () => {
           <li onClick={() => navigate("/Ausers")}>
             <FaUsers className="menu-icon" /> Users
           </li>
+
+          {/* 🔥 New Sidebar Item for Live Transactions */}
+          <li onClick={() => navigate("/AdminLiveTransactions")}>
+            <FaExchangeAlt className="menu-icon" /> Live Transactions
+          </li>
+
           <li onClick={() => navigate("/Aapis")}>
             <FaPlug className="menu-icon" /> APIs
           </li>

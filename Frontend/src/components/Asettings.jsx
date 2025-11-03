@@ -49,6 +49,7 @@ const Asettings = () => {
         <ul className="menu">
           <li onClick={() => navigate("/Admindashboard")}>Dashboard</li>
           <li onClick={() => navigate("/Ausers")}>Users</li>
+          <li onClick={() => navigate("/AdminLiveTransactions")}>Live Transactions</li> {/* 👈 Added */}
           <li onClick={() => navigate("/Aapis")}>APIs</li>
           <li onClick={() => navigate("/Ahelp")}>Help & Support</li>
           <li className="active" onClick={() => navigate("/Asettings")}>
@@ -65,205 +66,103 @@ const Asettings = () => {
         </header>
 
         <section className="settings-grid">
-          {/* User Profile Settings */}
+          {/* ====== User Profile Settings ====== */}
           <div className="settings-box">
             <h3>User Profile Settings</h3>
-            <div className="setting-item">
-              <span>Change password</span>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={settings.changePassword}
-                  onChange={() => handleToggle("changePassword")}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
-            <div className="setting-item">
-              <span>Two-factor authentication</span>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={settings.twoFactorAuth}
-                  onChange={() => handleToggle("twoFactorAuth")}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
-            <div className="setting-item">
-              <span>Notification preferences</span>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={settings.notifications}
-                  onChange={() => handleToggle("notifications")}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
-            <div className="setting-item">
-              <span>Language and timezone selection</span>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={settings.languageTime}
-                  onChange={() => handleToggle("languageTime")}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
+            {[
+              { label: "Change password", key: "changePassword" },
+              { label: "Two-factor authentication", key: "twoFactorAuth" },
+              { label: "Notification preferences", key: "notifications" },
+              { label: "Language and timezone selection", key: "languageTime" },
+            ].map(({ label, key }) => (
+              <div className="setting-item" key={key}>
+                <span>{label}</span>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={settings[key]}
+                    onChange={() => handleToggle(key)}
+                  />
+                  <span className="slider"></span>
+                </label>
+              </div>
+            ))}
           </div>
 
-          {/* Fraud Detection Configuration */}
+          {/* ====== Fraud Detection Configuration ====== */}
           <div className="settings-box">
             <h3>Fraud Detection Configuration</h3>
-            <div className="setting-item">
-              <span>Risk score threshold</span>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={settings.riskThreshold}
-                  onChange={() => handleToggle("riskThreshold")}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
-            <div className="setting-item">
-              <span>Model selection</span>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={settings.modelSelection}
-                  onChange={() => handleToggle("modelSelection")}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
-            <div className="setting-item">
-              <span>Update model frequency</span>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={settings.modelFrequency}
-                  onChange={() => handleToggle("modelFrequency")}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
-            <div className="setting-item">
-              <span>Enable real-time detection</span>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={settings.realTimeDetection}
-                  onChange={() => handleToggle("realTimeDetection")}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
+            {[
+              { label: "Risk score threshold", key: "riskThreshold" },
+              { label: "Model selection", key: "modelSelection" },
+              { label: "Update model frequency", key: "modelFrequency" },
+              { label: "Enable real-time detection", key: "realTimeDetection" },
+            ].map(({ label, key }) => (
+              <div className="setting-item" key={key}>
+                <span>{label}</span>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={settings[key]}
+                    onChange={() => handleToggle(key)}
+                  />
+                  <span className="slider"></span>
+                </label>
+              </div>
+            ))}
           </div>
 
-          {/* Security Settings */}
+          {/* ====== Security Settings ====== */}
           <div className="settings-box">
             <h3>Security Settings</h3>
-            <div className="setting-item">
-              <span>Login activity toggle</span>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={settings.loginToggle}
-                  onChange={() => handleToggle("loginToggle")}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
-            <div className="setting-item">
-              <span>Session timeout duration</span>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={settings.sessionTimeout}
-                  onChange={() => handleToggle("sessionTimeout")}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
-            <div className="setting-item">
-              <span>Account lock threshold</span>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={settings.accountLock}
-                  onChange={() => handleToggle("accountLock")}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
-            <div className="setting-item">
-              <span>Enable multi-factor authentication</span>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={settings.mfa}
-                  onChange={() => handleToggle("mfa")}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
+            {[
+              { label: "Login activity toggle", key: "loginToggle" },
+              { label: "Session timeout duration", key: "sessionTimeout" },
+              { label: "Account lock threshold", key: "accountLock" },
+              { label: "Enable multi-factor authentication", key: "mfa" },
+            ].map(({ label, key }) => (
+              <div className="setting-item" key={key}>
+                <span>{label}</span>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={settings[key]}
+                    onChange={() => handleToggle(key)}
+                  />
+                  <span className="slider"></span>
+                </label>
+              </div>
+            ))}
           </div>
 
-          {/* Alert & Notification Settings */}
+          {/* ====== Alert & Notification Settings ====== */}
           <div className="settings-box">
             <h3>Alert & Notification Settings</h3>
-            <div className="setting-item">
-              <span>Email/SMS alert toggle</span>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={settings.emailAlert}
-                  onChange={() => handleToggle("emailAlert")}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
-            <div className="setting-item">
-              <span>Alert frequency</span>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={settings.alertFrequency}
-                  onChange={() => handleToggle("alertFrequency")}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
-            <div className="setting-item">
-              <span>Priority level filter</span>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={settings.priorityFilter}
-                  onChange={() => handleToggle("priorityFilter")}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
-            <div className="setting-item">
-              <span>Auto-escalation rules</span>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={settings.autoEscalation}
-                  onChange={() => handleToggle("autoEscalation")}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
+            {[
+              { label: "Email/SMS alert toggle", key: "emailAlert" },
+              { label: "Alert frequency", key: "alertFrequency" },
+              { label: "Priority level filter", key: "priorityFilter" },
+              { label: "Auto-escalation rules", key: "autoEscalation" },
+            ].map(({ label, key }) => (
+              <div className="setting-item" key={key}>
+                <span>{label}</span>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={settings[key]}
+                    onChange={() => handleToggle(key)}
+                  />
+                  <span className="slider"></span>
+                </label>
+              </div>
+            ))}
           </div>
         </section>
 
         <div className="save-container">
-          <button className="save-btn" onClick={handleSave}>Save</button>
+          <button className="save-btn" onClick={handleSave}>
+            Save
+          </button>
         </div>
       </main>
     </div>
