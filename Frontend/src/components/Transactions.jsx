@@ -13,11 +13,11 @@ import {
 import "./Transactions.css";
 
 const Transactions = () => {
+
+  // ✅ Updated logout — no popup, direct redirect
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout?")) {
-      localStorage.clear();
-      window.location.href = "/home";
-    }
+    localStorage.clear();
+    window.location.href = "/home"; // instant redirect
   };
 
   return (
@@ -39,6 +39,7 @@ const Transactions = () => {
           <a href="/Change-Password"><FaLock /> Change Password</a>
         </nav>
 
+        {/* === Logout Button === */}
         <button className="logout-btn" onClick={handleLogout}>
           <FaSignOutAlt /> Logout
         </button>

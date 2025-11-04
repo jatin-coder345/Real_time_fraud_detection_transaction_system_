@@ -22,11 +22,13 @@ const ChangePassword = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
+  // ✅ Fetch user from localStorage
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) setLoginId(storedUser.loginId);
   }, []);
 
+  // ✅ Handle password change
   const handleChangePassword = async (e) => {
     e.preventDefault();
 
@@ -52,20 +54,21 @@ const ChangePassword = () => {
       setConfirmPassword("");
     } catch (error) {
       console.error(error.response || error.message);
-      setMessage("❌ " + (error.response?.data?.message || "Error changing password"));
+      setMessage(
+        "❌ " + (error.response?.data?.message || "Error changing password")
+      );
     }
   };
 
+  // ✅ Updated logout — no confirmation popup
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout?")) {
-      localStorage.clear();
-      navigate("/home");
-    }
+    localStorage.clear(); // clear user session
+    navigate("/home"); // instantly redirect to home
   };
 
   return (
     <div className="dashboard-container">
-      {/* Sidebar */}
+      {/* ===== Sidebar ===== */}
       <aside className="sidebar">
         <div className="user-section">
           <FaUserCircle className="user-icon" />
@@ -73,12 +76,22 @@ const ChangePassword = () => {
         </div>
 
         <nav className="nav-menu">
-          <a href="/Userdashboard"><FaTachometerAlt /> Dashboard</a>
-          <a href="/Transactions"><FaExchangeAlt /> Transactions</a>
-          <a href="/Reports"><FaChartBar /> Reports</a>
-          <a href="/Help"><FaQuestionCircle /> Help & Support</a>
+          <a href="/Userdashboard">
+            <FaTachometerAlt /> Dashboard
+          </a>
+          <a href="/Transactions">
+            <FaExchangeAlt /> Transactions
+          </a>
+          <a href="/Reports">
+            <FaChartBar /> Reports
+          </a>
+          <a href="/Help">
+            <FaQuestionCircle /> Help & Support
+          </a>
           {/* <a href="/Settings"><FaCog /> Settings</a> */}
-          <a href="/ChangePassword" className="active"><FaLock /> Change Password</a>
+          <a href="/ChangePassword" className="active">
+            <FaLock /> Change Password
+          </a>
         </nav>
 
         <button className="logout-btn" onClick={handleLogout}>
@@ -86,10 +99,14 @@ const ChangePassword = () => {
         </button>
       </aside>
 
-      {/* Main Content */}
+      {/* ===== Main Content ===== */}
       <main
         className="change-password-page"
-        style={{ backgroundImage: `url(${cpassword})` }}
+        style={{
+          backgroundImage: `url(${cpassword})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
       >
         <div className="change-password-container">
           <h2>Change Password</h2>

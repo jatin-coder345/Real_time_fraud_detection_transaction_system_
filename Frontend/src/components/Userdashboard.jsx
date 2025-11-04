@@ -14,8 +14,6 @@ import {
   FaTable,
   FaSignOutAlt,
   FaQuestionCircle,
-  FaUsers,
-  FaPlug,
 } from "react-icons/fa";
 import {
   LineChart,
@@ -31,7 +29,6 @@ import {
 } from "recharts";
 
 const socket = io("http://localhost:5000");
-
 const COLORS = ["#22c55e", "#ef4444"]; // Success = Green, Failed = Red
 
 const UserDashboard = () => {
@@ -126,10 +123,8 @@ const UserDashboard = () => {
 
   // ===== Sidebar and Logout =====
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout?")) {
-      localStorage.clear();
-      navigate("/home");
-    }
+    localStorage.clear();
+    navigate("/home");
   };
 
   const handleMenuClick = (menu, path) => {
@@ -213,12 +208,6 @@ const UserDashboard = () => {
           >
             <FaQuestionCircle /> Help & Support
           </li>
-          {/* <li
-            className={getActiveMenu() === "settings" ? "active" : ""}
-            onClick={() => handleMenuClick("settings", "/settings")}
-          >
-            <FaCog /> Settings
-          </li> */}
           <li
             className={getActiveMenu() === "change-password" ? "active" : ""}
             onClick={() =>

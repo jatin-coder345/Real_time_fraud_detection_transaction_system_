@@ -136,12 +136,10 @@ const Reports = () => {
     ]);
   }, [transactions]);
 
-  // ===== Logout =====
+  // ===== Logout (updated – no popup) =====
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout?")) {
-      localStorage.clear();
-      navigate("/home");
-    }
+    localStorage.clear();
+    navigate("/home"); // instantly redirects to home page
   };
 
   return (

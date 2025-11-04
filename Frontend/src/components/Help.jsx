@@ -4,7 +4,6 @@ import emailjs from "@emailjs/browser";
 import "./Help.css";
 import {
   Mail,
-  MessageCircle,
   BookOpen,
   Phone,
   Send,
@@ -26,22 +25,12 @@ const Help = () => {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  // ✅ Replace with your real IDs from EmailJS
-  
+  // ✅ EmailJS Credentials
+  const SERVICE_ID = "narmada123";
+  const TEMPLATE_ID = "template_6alm0bi";
+  const PUBLIC_KEY = "wu0Kidkg7ONEiz4XE";
 
-
-const SERVICE_ID = "narmada123";
-const TEMPLATE_ID = "template_6alm0bi";
-const PUBLIC_KEY = "wu0Kidkg7ONEiz4XE";
-// const SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
-// const TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
-// const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
-
-
-
-
-
-
+  // ✅ Send Email Function
   const sendEmail = (e) => {
     e.preventDefault();
     setLoading(true);
@@ -63,16 +52,15 @@ const PUBLIC_KEY = "wu0Kidkg7ONEiz4XE";
       );
   };
 
+  // ✅ Logout without popup
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout?")) {
-      localStorage.clear();
-      navigate("/home");
-    }
+    localStorage.clear();
+    navigate("/home"); // instant redirect, no confirm popup
   };
 
   return (
     <div className="dashboard-container">
-      {/* Sidebar */}
+      {/* === SIDEBAR === */}
       <aside className="sidebar">
         <div className="user-section">
           <FaUserCircle className="user-icon" />
@@ -103,53 +91,51 @@ const PUBLIC_KEY = "wu0Kidkg7ONEiz4XE";
         </button>
       </aside>
 
-      {/* Main Section */}
+      {/* === MAIN CONTENT === */}
       <main className="help-main">
         <div className="help-page">
+          {/* === HEADER === */}
           <header className="help-header">
             <Headphones className="header-icon" />
             <h1>Help & Support Center</h1>
             <p>
               Need assistance? We're here to help you with issues, fraud alerts,
-              or setup guidance.
+              or setup guidance. Contact us using the details below or send a message directly.
             </p>
           </header>
 
+          {/* === SUPPORT INFO + FORM === */}
           <section className="help-section">
             <div className="help-info">
+              {/* Email */}
               <div className="info-card">
                 <Mail className="icon" />
                 <h3>Email Support</h3>
-                <p>Reach us anytime for help.</p>
+                <p>Reach us anytime for help or queries.</p>
                 <span>support@fraudshield.ai</span>
               </div>
 
+              {/* Phone */}
               <div className="info-card">
                 <Phone className="icon" />
                 <h3>Call Us</h3>
-                <p>Mon–Fri, 9AM–6PM.</p>
+                <p>Available Mon–Fri, 9AM–6PM.</p>
                 <span>+91 98765 43210</span>
               </div>
 
-              <div className="info-card">
-                <MessageCircle className="icon" />
-                <h3>Live Chat</h3>
-                <p>Chat with our experts instantly.</p>
-                <button className="chat-btn">Start Chat</button>
-              </div>
-
+              {/* Knowledge Base */}
               <div className="info-card">
                 <BookOpen className="icon" />
                 <h3>Knowledge Base</h3>
-                <p>Explore FAQs, guides, and tutorials.</p>
+                <p>Explore FAQs, user guides, and tutorials.</p>
                 <button className="learn-btn">Visit Hub</button>
               </div>
             </div>
 
-            {/* Contact Form */}
+            {/* === CONTACT FORM === */}
             <div className="help-form">
               <h2>Contact Support</h2>
-              <p>Submit your query and our team will respond soon.</p>
+              <p>Submit your issue and our team will respond shortly.</p>
 
               <form ref={form} onSubmit={sendEmail}>
                 <div className="form-group">
@@ -177,7 +163,7 @@ const PUBLIC_KEY = "wu0Kidkg7ONEiz4XE";
                   <input
                     type="text"
                     name="subject"
-                    placeholder="Transaction issue"
+                    placeholder="Issue with transaction"
                     required
                   />
                 </div>
@@ -209,4 +195,3 @@ const PUBLIC_KEY = "wu0Kidkg7ONEiz4XE";
 };
 
 export default Help;
-
