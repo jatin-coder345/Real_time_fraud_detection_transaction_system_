@@ -42,7 +42,7 @@ const Ausers = () => {
     <div className="admin-dashboard fullscreen">
       {/* ===== Sidebar ===== */}
       <aside className="admin-sidebar fullscreen-sidebar">
-        <h2 className="logo">FraudGuard Admin</h2>
+        <h2 className="logo">Fraud Detection</h2>
         <ul className="menu">
           <li onClick={() => navigate("/Admindashboard")}>Dashboard</li>
           <li className="active" onClick={() => navigate("/Ausers")}>
