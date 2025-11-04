@@ -128,7 +128,7 @@ const UserDashboard = () => {
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
       localStorage.clear();
-      navigate("/login");
+      navigate("/home");
     }
   };
 
@@ -175,11 +175,11 @@ const UserDashboard = () => {
             <button onClick={() => alert("Profile page coming soon!")}>
               View Profile
             </button>
-            <button
+            {/* <button
               onClick={() => handleMenuClick("settings", "/settings")}
             >
               Settings
-            </button>
+            </button> */}
             <button className="logout-popup" onClick={handleLogout}>
               <FaSignOutAlt /> Logout
             </button>
@@ -213,12 +213,12 @@ const UserDashboard = () => {
           >
             <FaQuestionCircle /> Help & Support
           </li>
-          <li
+          {/* <li
             className={getActiveMenu() === "settings" ? "active" : ""}
             onClick={() => handleMenuClick("settings", "/settings")}
           >
             <FaCog /> Settings
-          </li>
+          </li> */}
           <li
             className={getActiveMenu() === "change-password" ? "active" : ""}
             onClick={() =>

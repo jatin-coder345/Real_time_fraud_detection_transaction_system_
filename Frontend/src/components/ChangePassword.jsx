@@ -59,7 +59,7 @@ const ChangePassword = () => {
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
       localStorage.clear();
-      navigate("/login");
+      navigate("/home");
     }
   };
 
@@ -77,7 +77,7 @@ const ChangePassword = () => {
           <a href="/Transactions"><FaExchangeAlt /> Transactions</a>
           <a href="/Reports"><FaChartBar /> Reports</a>
           <a href="/Help"><FaQuestionCircle /> Help & Support</a>
-          <a href="/Settings"><FaCog /> Settings</a>
+          {/* <a href="/Settings"><FaCog /> Settings</a> */}
           <a href="/ChangePassword" className="active"><FaLock /> Change Password</a>
         </nav>
 

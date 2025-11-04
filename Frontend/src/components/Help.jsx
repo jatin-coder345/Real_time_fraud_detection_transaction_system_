@@ -66,7 +66,7 @@ const PUBLIC_KEY = "wu0Kidkg7ONEiz4XE";
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
       localStorage.clear();
-      navigate("/login");
+      navigate("/home");
     }
   };
 
