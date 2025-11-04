@@ -76,8 +76,8 @@ const PUBLIC_KEY = "wu0Kidkg7ONEiz4XE";
       <aside className="sidebar">
         <div className="user-section">
           <FaUserCircle className="user-icon" />
-          <h3>Welcome</h3>
-          <p>User Panel</p>
+          {/* <h3>Welcome</h3>
+          <p>User Panel</p> */}
         </div>
 
         <nav className="nav-menu">

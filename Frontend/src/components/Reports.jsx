@@ -150,8 +150,8 @@ const Reports = () => {
       <aside className="sidebar">
         <div className="user-section">
           <FaUserCircle className="user-icon" />
-          <h3>{user?.firstName || "User"}</h3>
-          <p>{user?.role || "Member"}</p>
+          {/* <h3>{user?.firstName || "User"}</h3>
+          <p>{user?.role || "Member"}</p> */}
         </div>
 
         <nav className="nav-menu">
@@ -259,31 +259,38 @@ const Reports = () => {
         <div className="table-section">
           <h3>📋 Recent Reports</h3>
           <table>
-            <thead>
-              <tr>
-                <th>Transaction ID</th>
-                <th>Date</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Risk Level</th>
-                <th>Fraud</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.slice(0, 8).map((t) => (
-                <tr key={t._id}>
-                  <td>{t._id.slice(-6).toUpperCase()}</td>
-                  <td>{new Date(t.createdAt).toLocaleString()}</td>
-                  <td>₹{t.amount}</td>
-                  <td className={t.status === "failed" ? "failed" : "success"}>
-                    {t.status}
-                  </td>
-                  <td>{t.risk_level || "N/A"}</td>
-                  <td>{t.fraud_detected ? "🚨" : "✅"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+  <thead>
+    <tr>
+      <th>Transaction ID</th>
+      <th>Date</th>
+      <th>Amount</th>
+      <th>Status</th>
+      <th>Fraud</th>
+    </tr>
+  </thead>
+  <tbody>
+    {transactions.slice(0, 8).map((t) => {
+      const transactionDate =
+        t.createdAt || t.date || t.timestamp || null; // ✅ check possible fields
+      return (
+        <tr key={t._id}>
+          <td>{t._id.slice(-6).toUpperCase()}</td>
+          <td>
+            {transactionDate
+              ? new Date(transactionDate).toLocaleString()
+              : "N/A"}
+          </td>
+          <td>₹{t.amount}</td>
+          <td className={t.status === "failed" ? "failed" : "success"}>
+            {t.status}
+          </td>
+          <td>{t.fraud_detected ? "🚨" : "✅"}</td>
+        </tr>
+      );
+    })}
+  </tbody>
+</table>
+
         </div>
       </main>
     </div>

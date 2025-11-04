@@ -172,7 +172,7 @@ const UserDashboard = () => {
             <FaUserCircle className="popup-avatar" />
             <h4>{user?.firstName || "Guest User"}</h4>
             <p>{user?.loginId || "user@example.com"}</p>
-            <button onClick={() => navigate("/profile")}>
+            <button onClick={() => navigate("/Aprofile")}>
               View Profile
             </button>
             {/* <button

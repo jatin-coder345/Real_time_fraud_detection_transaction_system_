@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import io from "socket.io-client";
+import axios from "axios";
 import {
   BarChart,
   Bar,
@@ -23,44 +25,24 @@ import {
   FaShieldAlt,
   FaUserShield,
   FaLifeRing,
-  FaExchangeAlt, // 🔥 Added for Live Transactions
+  FaExchangeAlt,
+  FaUserCircle, // 👈 Added for Profile
 } from "react-icons/fa";
 import "./AdminDashboard.css";
+
+const socket = io("http://localhost:5000");
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [admin, setAdmin] = useState(null);
+  const [transactions, setTransactions] = useState([]);
   const [stats, setStats] = useState({
-    totalUsers: 1250,
-    totalTransactions: 8234,
-    fraudCases: 176,
+    totalUsers: 0,
+    totalTransactions: 0,
+    fraudCases: 0,
   });
+  const [loading, setLoading] = useState(true);
 
-  const [transactions, setTransactions] = useState([
-    {
-      _id: "TXN001",
-      userId: "U101",
-      amount: 4500,
-      isFraud: false,
-      timestamp: new Date().toISOString(),
-    },
-    {
-      _id: "TXN002",
-      userId: "U102",
-      amount: 12000,
-      isFraud: true,
-      timestamp: new Date().toISOString(),
-    },
-    {
-      _id: "TXN003",
-      userId: "U104",
-      amount: 9800,
-      isFraud: false,
-      timestamp: new Date().toISOString(),
-    },
-  ]);
-
-  // ✅ Load logged-in admin from localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -68,14 +50,57 @@ const AdminDashboard = () => {
     } else {
       navigate("/login");
     }
+
+    // Fetch transactions
+    const fetchTransactions = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get("http://localhost:5000/api/transactions");
+        const data = res.data || [];
+        setTransactions(data);
+        updateStats(data);
+      } catch (err) {
+        console.error("Error fetching transactions:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTransactions();
+
+    // Real-time updates
+    socket.emit("registerAdmin");
+    socket.on("adminTransaction", (txn) => {
+      setTransactions((prev) => {
+        const updated = [txn, ...prev];
+        updateStats(updated);
+        return updated;
+      });
+    });
+
+    return () => socket.off("adminTransaction");
   }, [navigate]);
+
+  const updateStats = (data) => {
+    const totalTransactions = data.length;
+    const fraudCases = data.filter((t) => t.fraud_detected || t.isFraud).length;
+    const uniqueUsers = new Set(data.map((t) => t.user || t.userId)).size;
+
+    setStats({
+      totalUsers: uniqueUsers,
+      totalTransactions,
+      fraudCases,
+    });
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     alert("You have been logged out.");
     navigate("/home");
   };
 
+  // ===== Chart Data =====
   const barData = [
     { name: "Jan", fraud: 12, legit: 110 },
     { name: "Feb", fraud: 8, legit: 150 },
@@ -85,8 +110,8 @@ const AdminDashboard = () => {
   ];
 
   const pieData = [
-    { name: "Legit Transactions", value: 8060 },
-    { name: "Fraudulent Transactions", value: 176 },
+    { name: "Legit Transactions", value: stats.totalTransactions - stats.fraudCases },
+    { name: "Fraudulent Transactions", value: stats.fraudCases },
   ];
 
   const COLORS = ["#2ecc71", "#e74c3c"];
@@ -108,24 +133,31 @@ const AdminDashboard = () => {
           <li className="active" onClick={() => navigate("/Adashboard")}>
             <FaTachometerAlt className="menu-icon" /> Dashboard
           </li>
+
+         {/* 🧑‍💼 New Profile Section */}
+          <li onClick={() => navigate("/Aprofile")}>
+            <FaUserCircle className="menu-icon" /> Profile
+          </li>
+
+
           <li onClick={() => navigate("/Ausers")}>
             <FaUsers className="menu-icon" /> Users
           </li>
 
-          {/* 🔥 New Sidebar Item for Live Transactions */}
+         
           <li onClick={() => navigate("/AdminLiveTransactions")}>
             <FaExchangeAlt className="menu-icon" /> Live Transactions
           </li>
-
           <li onClick={() => navigate("/Aapis")}>
             <FaPlug className="menu-icon" /> APIs
           </li>
-          <li onClick={() => navigate("/Ahelp")}>
+          {/* Optional future routes */}
+          {/* <li onClick={() => navigate("/Ahelp")}>
             <FaLifeRing className="menu-icon" /> Help & Support
           </li>
           <li onClick={() => navigate("/Asettings")}>
             <FaCog className="menu-icon" /> Settings
-          </li>
+          </li> */}
           <li onClick={handleLogout}>
             <FaSignOutAlt className="menu-icon" /> Logout
           </li>
@@ -137,11 +169,11 @@ const AdminDashboard = () => {
         <header className="admin-header">
           <div>
             <h1>Welcome, {admin ? admin.firstName : "Admin"} 👋</h1>
-            <p>Analytics overview of users and transactions in the system.</p>
+            <p>Real-time analytics of system transactions and fraud detection.</p>
           </div>
         </header>
 
-        {/* ===== Top Stats Cards ===== */}
+        {/* ===== Stats Cards ===== */}
         <section className="stats-sectionn">
           <div className="stat-card users">
             <h3>Total Users</h3>
@@ -157,7 +189,7 @@ const AdminDashboard = () => {
           </div>
         </section>
 
-        {/* ===== Charts Section ===== */}
+        {/* ===== Charts ===== */}
         <section className="chart-container">
           <div className="chart-card">
             <h2>Fraud vs Legit (Monthly Overview)</h2>
@@ -187,10 +219,7 @@ const AdminDashboard = () => {
                   label
                 >
                   {pieData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -200,41 +229,51 @@ const AdminDashboard = () => {
           </div>
         </section>
 
-        {/* ===== Recent Transactions Table ===== */}
+        {/* ===== Recent Transactions ===== */}
         <section className="table-section fullscreen-table">
           <h2>Recent Transactions</h2>
-          <table className="transaction-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>User ID</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Timestamp</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.length > 0 ? (
-                transactions.map((txn) => (
-                  <tr key={txn._id}>
-                    <td>{txn._id}</td>
-                    <td>{txn.userId}</td>
-                    <td>₹{txn.amount}</td>
-                    <td className={txn.isFraud ? "fraud" : "legit"}>
-                      {txn.isFraud ? "Fraud" : "Legit"}
-                    </td>
-                    <td>{new Date(txn.timestamp).toLocaleString()}</td>
-                  </tr>
-                ))
-              ) : (
+          {loading ? (
+            <p className="loading-text">Loading transactions...</p>
+          ) : (
+            <table className="transaction-table">
+              <thead>
                 <tr>
-                  <td colSpan="5" style={{ textAlign: "center" }}>
-                    No transactions available
-                  </td>
+                  <th>Txn ID</th>
+                  <th>User ID</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Date</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {transactions.length > 0 ? (
+                  transactions.slice(0, 8).map((txn) => (
+                    <tr key={txn._id}>
+                      <td>{txn._id.slice(-6).toUpperCase()}</td>
+                      <td>{txn.user || txn.userId}</td>
+                      <td>₹{txn.amount}</td>
+                      <td className={txn.fraud_detected || txn.isFraud ? "fraud" : "legit"}>
+                        {txn.fraud_detected || txn.isFraud ? "Fraud" : "Legit"}
+                      </td>
+                      <td>
+                        {txn.createdAt
+                          ? new Date(txn.createdAt).toLocaleString()
+                          : txn.timestamp
+                          ? new Date(txn.timestamp).toLocaleString()
+                          : "N/A"}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" style={{ textAlign: "center" }}>
+                      No transactions found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
         </section>
       </main>
     </div>

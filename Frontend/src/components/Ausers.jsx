@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./AdminDashboard.css"; // ✅ reuse same styles
+import "./AdminDashboard.css";
+
+// ✅ Import sidebar icons
+import {
+  FaTachometerAlt,
+  FaUsers,
+  FaExchangeAlt,
+  FaPlug,
+  FaSignOutAlt,
+  FaShieldAlt,
+  FaUserCircle,
+} from "react-icons/fa";
 
 const Ausers = () => {
   const navigate = useNavigate();
@@ -42,20 +53,37 @@ const Ausers = () => {
     <div className="admin-dashboard fullscreen">
       {/* ===== Sidebar ===== */}
       <aside className="admin-sidebar fullscreen-sidebar">
-        <h2 className="logo">Fraud Detection</h2>
+
+        <div className="sidebar-header">
+          <FaShieldAlt className="sidebar-logo-icon" />
+          <h2 className="logo-text">Fraud Detection</h2>
+        </div>
+
+
         <ul className="menu">
-          <li onClick={() => navigate("/Admindashboard")}>Dashboard</li>
+          <li onClick={() => navigate("/Admindashboard")}>
+            <FaTachometerAlt className="menu-icon" /> Dashboard
+          </li>
+
+          <li onClick={() => navigate("/Aprofile")}>
+            <FaUserCircle className="menu-icon" /> Profile
+          </li>
+
           <li className="active" onClick={() => navigate("/Ausers")}>
-            Users
+            <FaUsers className="menu-icon" /> Users
           </li>
-          {/* ✅ NEW Live Transactions Section */}
+
           <li onClick={() => navigate("/AdminLiveTransactions")}>
-            Live Transactions
+            <FaExchangeAlt className="menu-icon" /> Live Transactions
           </li>
-          <li onClick={() => navigate("/Aapis")}>APIs</li>
-          <li onClick={() => navigate("/Ahelp")}>Help & Support</li>
-          <li onClick={() => navigate("/Asettings")}>Settings</li>
-          <li onClick={handleLogout}>Logout</li>
+
+          <li onClick={() => navigate("/Aapis")}>
+            <FaPlug className="menu-icon" /> APIs
+          </li>
+
+          <li onClick={handleLogout}>
+            <FaSignOutAlt className="menu-icon" /> Logout
+          </li>
         </ul>
       </aside>
 
