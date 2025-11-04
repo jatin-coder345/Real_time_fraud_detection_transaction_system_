@@ -167,7 +167,14 @@ const UserDashboard = () => {
             <FaUserCircle className="popup-avatar" />
             <h4>{user?.firstName || "Guest User"}</h4>
             <p>{user?.loginId || "user@example.com"}</p>
-            <button onClick={() => navigate("/profile")}>View Profile</button>
+            <button onClick={() => navigate("/Aprofile")}>
+              View Profile
+            </button>
+            {/* <button
+              onClick={() => handleMenuClick("settings", "/settings")}
+            >
+              Settings
+            </button> */}
             <button className="logout-popup" onClick={handleLogout}>
               <FaSignOutAlt /> Logout
             </button>
