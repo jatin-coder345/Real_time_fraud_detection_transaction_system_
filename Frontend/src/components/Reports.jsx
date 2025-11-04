@@ -140,7 +140,7 @@ const Reports = () => {
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
       localStorage.clear();
-      navigate("/login");
+      navigate("/home");
     }
   };
 
@@ -167,9 +167,9 @@ const Reports = () => {
           <a href="/help">
             <FaQuestionCircle /> Help & Support
           </a>
-          <a href="/settings">
+          {/* <a href="/settings">
             <FaCog /> Settings
-          </a>
+          </a> */}
           <a href="/change-password">
             <FaLock /> Change Password
           </a>

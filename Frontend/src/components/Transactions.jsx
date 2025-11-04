@@ -16,7 +16,7 @@ const Transactions = () => {
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
       localStorage.clear();
-      window.location.href = "/login";
+      window.location.href = "/home";
     }
   };
 
@@ -35,7 +35,7 @@ const Transactions = () => {
           <a href="/Transactions" className="active"><FaExchangeAlt /> Transactions</a>
           <a href="/Reports"><FaChartBar /> Reports</a>
           <a href="/Help"><FaQuestionCircle /> Help & Support</a>
-          <a href="/Settings"><FaCog /> Settings</a>
+          {/* <a href="/Settings"><FaCog /> Settings</a> */}
           <a href="/Change-Password"><FaLock /> Change Password</a>
         </nav>
 
