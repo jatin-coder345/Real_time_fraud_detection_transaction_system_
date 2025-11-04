@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // ✅ Added
 import "./Help.css";
 import {
   Mail,
@@ -14,27 +15,29 @@ import {
   FaCog,
   FaTachometerAlt,
   FaUserCircle,
-  FaTable,
   FaSignOutAlt,
   FaQuestionCircle,
-  FaUsers,
-  FaPlug,
   FaLock,
 } from "react-icons/fa";
 
 const Help = () => {
+  const navigate = useNavigate(); // ✅ Initialize navigate
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
     message: "",
   });
+
   const [submitted, setSubmitted] = useState(false);
 
+  // ✅ Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // ✅ Handle form submit
   const handleSubmit = (e) => {
     e.preventDefault();
     setSubmitted(true);
@@ -42,7 +45,8 @@ const Help = () => {
     setFormData({ name: "", email: "", subject: "", message: "" });
   };
 
- const handleLogout = () => {
+  // ✅ Fixed logout functionality
+  const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
       localStorage.clear();
       navigate("/login");
@@ -55,8 +59,8 @@ const Help = () => {
       <aside className="sidebar">
         <div className="user-section">
           <FaUserCircle className="user-icon" />
-          <h3></h3>
-          <p></p>
+          <h3>Welcome</h3>
+          <p>User Panel</p>
         </div>
 
         <nav className="nav-menu">
@@ -72,16 +76,10 @@ const Help = () => {
           <a href="/Help" className="active">
             <FaQuestionCircle /> Help & Support
           </a>
-          {/* <a href="/Users">
-            <FaUsers /> Users
-          </a>
-          <a href="/APIs">
-            <FaPlug /> APIs
-          </a> */}
           <a href="/Settings">
             <FaCog /> Settings
           </a>
-          <a href="/ChangePassword">
+          <a href="/Change-Password">
             <FaLock /> Change Password
           </a>
         </nav>
@@ -91,7 +89,7 @@ const Help = () => {
         </button>
       </aside>
 
-      {/* === HELP MAIN PAGE === */}
+      {/* === MAIN CONTENT === */}
       <main className="help-main">
         <div className="help-page">
           <header className="help-header">

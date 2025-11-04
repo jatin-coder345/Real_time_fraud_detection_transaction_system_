@@ -1,4 +1,8 @@
-import React from "react";
+// Reports.jsx
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import io from "socket.io-client";
+import axios from "axios";
 import {
   LineChart,
   Line,
@@ -17,42 +21,123 @@ import {
   FaCog,
   FaTachometerAlt,
   FaUserCircle,
-  FaTable,
   FaSignOutAlt,
   FaQuestionCircle,
-  FaUsers,
-  FaPlug,
   FaLock,
 } from "react-icons/fa";
 import "./Reports.css";
 
+const socket = io("http://localhost:5000");
+const COLORS = ["#ef4444", "#facc15", "#22c55e"]; // red, yellow, green
+
 const Reports = () => {
-  const trendData = [
-    { name: "Mon", value: 120 },
-    { name: "Tue", value: 180 },
-    { name: "Wed", value: 160 },
-    { name: "Thu", value: 220 },
-    { name: "Fri", value: 300 },
-    { name: "Sat", value: 250 },
-    { name: "Sun", value: 180 },
-  ];
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [transactions, setTransactions] = useState([]);
 
-  const pieData = [
-    { name: "High Risk", value: 15 },
-    { name: "Medium Risk", value: 30 },
-    { name: "Low Risk", value: 55 },
-  ];
-  const COLORS = ["#f87171", "#facc15", "#4ade80"];
+  const [summary, setSummary] = useState({
+    totalReports: 0,
+    fraudDetected: 0,
+    reviewPending: 0,
+    resolvedCases: 0,
+    detectionAccuracy: 0,
+  });
 
-  const reportSummary = [
-    { title: "Total Reports", value: "1,248", color: "#4f46e5" },
-    { title: "Fraud Detected", value: "48", color: "#f43f5e" },
-    { title: "Review Pending", value: "12", color: "#f59e0b" },
-    { title: "Resolved Cases", value: "36", color: "#22c55e" },
-    { title: "Detection Accuracy", value: "97.8%", color: "#0ea5e9" },
-  ];
+  const [trendData, setTrendData] = useState([]);
+  const [pieData, setPieData] = useState([]);
 
-   const handleLogout = () => {
+  // ===== Load user and fetch data =====
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      fetchUserReports(parsedUser._id);
+
+      socket.emit("registerUser", parsedUser._id);
+      socket.on("newTransaction", (txn) => {
+        if (txn.user === parsedUser._id) {
+          setTransactions((prev) => [txn, ...prev]);
+        }
+      });
+    } else {
+      navigate("/login");
+    }
+
+    return () => {
+      socket.off("newTransaction");
+    };
+  }, [navigate]);
+
+  // ===== Fetch user's reports (transactions) =====
+  const fetchUserReports = async (userId) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/transactions/user/${userId}`
+      );
+      setTransactions(res.data);
+    } catch (err) {
+      console.error("Error fetching reports:", err);
+    }
+  };
+
+  // ===== Calculate Stats =====
+  useEffect(() => {
+    if (transactions.length === 0) return;
+
+    const totalReports = transactions.length;
+    const fraudDetected = transactions.filter((t) => t.fraud_detected).length;
+    const reviewPending = transactions.filter(
+      (t) => t.status === "pending" || t.status === "under-review"
+    ).length;
+    const resolvedCases = transactions.filter(
+      (t) => t.status === "completed" || t.status === "resolved"
+    ).length;
+
+    const detectionAccuracy = totalReports
+      ? (((totalReports - fraudDetected) / totalReports) * 100).toFixed(1)
+      : 0;
+
+    setSummary({
+      totalReports,
+      fraudDetected,
+      reviewPending,
+      resolvedCases,
+      detectionAccuracy,
+    });
+
+    // ===== Prepare Chart Data =====
+    // --- Weekly trend
+    const dailyMap = {};
+    transactions.forEach((t) => {
+      const day = new Date(t.createdAt).toLocaleDateString("en-US", {
+        weekday: "short",
+      });
+      dailyMap[day] = (dailyMap[day] || 0) + 1;
+    });
+
+    const trendArr = Object.keys(dailyMap).map((d) => ({
+      name: d,
+      value: dailyMap[d],
+    }));
+    setTrendData(trendArr);
+
+    // --- Risk level breakdown
+    const high = transactions.filter(
+      (t) => t.risk_level === "high" || (t.fraud_detected && !t.risk_level)
+    ).length;
+    const medium = transactions.filter((t) => t.risk_level === "medium").length;
+    const low = transactions.filter((t) => t.risk_level === "low").length;
+
+    setPieData([
+      { name: "High Risk", value: high },
+      { name: "Medium Risk", value: medium },
+      { name: "Low Risk", value: low },
+    ]);
+  }, [transactions]);
+
+  // ===== Logout =====
+  const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
       localStorage.clear();
       navigate("/login");
@@ -61,55 +146,87 @@ const Reports = () => {
 
   return (
     <div className="dashboard-container">
-      {/* Sidebar */}
+      {/* ===== Sidebar ===== */}
       <aside className="sidebar">
         <div className="user-section">
           <FaUserCircle className="user-icon" />
-          <h3></h3>
-          <p></p>
+          <h3>{user?.firstName || "User"}</h3>
+          <p>{user?.role || "Member"}</p>
         </div>
 
         <nav className="nav-menu">
-          <a href="/Userdashboard"><FaTachometerAlt /> Dashboard</a>
-          <a href="/Transactions"><FaExchangeAlt /> Transactions</a>
-          <a href="/Reports" className="active"><FaChartBar /> Reports</a>
-          <a href="/Help"><FaQuestionCircle /> Help & Support</a>
-          {/* <a href="/Users"><FaUsers /> Users</a>
-          <a href="/APIs"><FaPlug /> APIs</a> */}
-          <a href="/Settings"><FaCog /> Settings</a>
-          <a href="/ChangePassword"><FaLock /> Change Password</a>
+          <a href="/userdashboard">
+            <FaTachometerAlt /> Dashboard
+          </a>
+          <a href="/transactions">
+            <FaExchangeAlt /> Transactions
+          </a>
+          <a href="/reports" className="active">
+            <FaChartBar /> Reports
+          </a>
+          <a href="/help">
+            <FaQuestionCircle /> Help & Support
+          </a>
+          <a href="/settings">
+            <FaCog /> Settings
+          </a>
+          <a href="/change-password">
+            <FaLock /> Change Password
+          </a>
         </nav>
 
-        <button className="logout-btn" onClick={handleLogout}><FaSignOutAlt /> Logout</button>
+        <button className="logout-btn" onClick={handleLogout}>
+          <FaSignOutAlt /> Logout
+        </button>
       </aside>
 
-      {/* Main Content */}
+      {/* ===== Main Content ===== */}
       <main className="reports-page">
         <div className="reports-header">
-          <h1>📊 Detailed Fraud Detection Reports</h1>
-          <p>Real-time insights and detailed analytics of fraud activities</p>
+          <h1>📊 Real-Time Fraud Reports</h1>
+          <p>Live analytics generated from your recent transactions</p>
         </div>
 
-        {/* Summary Cards */}
+        {/* ===== Summary Cards ===== */}
         <div className="summary-cards">
-          {reportSummary.map((card, index) => (
-            <div key={index} className="summary-card" style={{ borderTop: `4px solid ${card.color}` }}>
-              <h4>{card.title}</h4>
-              <p>{card.value}</p>
-            </div>
-          ))}
+          <div className="summary-card" style={{ borderTop: "4px solid #6366f1" }}>
+            <h4>Total Reports</h4>
+            <p>{summary.totalReports}</p>
+          </div>
+          <div className="summary-card" style={{ borderTop: "4px solid #ef4444" }}>
+            <h4>Fraud Detected</h4>
+            <p>{summary.fraudDetected}</p>
+          </div>
+          <div className="summary-card" style={{ borderTop: "4px solid #facc15" }}>
+            <h4>Review Pending</h4>
+            <p>{summary.reviewPending}</p>
+          </div>
+          <div className="summary-card" style={{ borderTop: "4px solid #22c55e" }}>
+            <h4>Resolved Cases</h4>
+            <p>{summary.resolvedCases}</p>
+          </div>
+          <div className="summary-card" style={{ borderTop: "4px solid #0ea5e9" }}>
+            <h4>Detection Accuracy</h4>
+            <p>{summary.detectionAccuracy}%</p>
+          </div>
         </div>
 
-        {/* Charts Section */}
+        {/* ===== Charts Section ===== */}
         <div className="charts-grid">
           <div className="chart-card">
-            <h3>📈 Weekly Fraud Trend</h3>
+            <h3>📈 Weekly Transaction Trend</h3>
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={trendData}>
                 <XAxis dataKey="name" stroke="#ccc" />
                 <YAxis stroke="#ccc" />
                 <Tooltip contentStyle={{ backgroundColor: "#1e293b", color: "#fff" }} />
-                <Line type="monotone" dataKey="value" stroke="#6366f1" strokeWidth={3} dot={{ r: 5 }} />
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#6366f1"
+                  strokeWidth={3}
+                  dot={{ r: 5 }}
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -120,11 +237,11 @@ const Reports = () => {
               <PieChart>
                 <Pie
                   data={pieData}
+                  dataKey="value"
+                  nameKey="name"
                   cx="50%"
                   cy="50%"
-                  labelLine={false}
                   outerRadius={80}
-                  dataKey="value"
                   label
                 >
                   {pieData.map((entry, index) => (
@@ -138,71 +255,35 @@ const Reports = () => {
           </div>
         </div>
 
-        {/* Detailed Report Table */}
+        {/* ===== Detailed Table ===== */}
         <div className="table-section">
-          <h3>📋 Recent Fraud Reports</h3>
+          <h3>📋 Recent Reports</h3>
           <table>
             <thead>
               <tr>
-                <th>Report ID</th>
+                <th>Transaction ID</th>
                 <th>Date</th>
-                <th>User</th>
-                <th>Location</th>
                 <th>Amount</th>
                 <th>Status</th>
                 <th>Risk Level</th>
+                <th>Fraud</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>RPT-1021</td>
-                <td>2025-10-28</td>
-                <td>ACC-93821</td>
-                <td>New York, USA</td>
-                <td>$2,450</td>
-                <td><span className="status under-review">Under Review</span></td>
-                <td><span className="risk high">High</span></td>
-              </tr>
-              <tr>
-                <td>RPT-1022</td>
-                <td>2025-10-29</td>
-                <td>ACC-72930</td>
-                <td>California, USA</td>
-                <td>$580</td>
-                <td><span className="status resolved">Resolved</span></td>
-                <td><span className="risk low">Low</span></td>
-              </tr>
-              <tr>
-                <td>RPT-1023</td>
-                <td>2025-10-30</td>
-                <td>ACC-39481</td>
-                <td>Texas, USA</td>
-                <td>$1,120</td>
-                <td><span className="status blocked">Blocked</span></td>
-                <td><span className="risk medium">Medium</span></td>
-              </tr>
+              {transactions.slice(0, 8).map((t) => (
+                <tr key={t._id}>
+                  <td>{t._id.slice(-6).toUpperCase()}</td>
+                  <td>{new Date(t.createdAt).toLocaleString()}</td>
+                  <td>₹{t.amount}</td>
+                  <td className={t.status === "failed" ? "failed" : "success"}>
+                    {t.status}
+                  </td>
+                  <td>{t.risk_level || "N/A"}</td>
+                  <td>{t.fraud_detected ? "🚨" : "✅"}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
-        </div>
-
-        {/* Insights Section */}
-        <div className="insights-section">
-          <div className="insight-card">
-            <h4>🔍 Top 3 Fraud-Prone Regions</h4>
-            <ul>
-              <li>1️⃣ New York, USA</li>
-              <li>2️⃣ Mumbai, India</li>
-              <li>3️⃣ London, UK</li>
-            </ul>
-          </div>
-          <div className="insight-card">
-            <h4>⚙️ Recommended Actions</h4>
-            <ul>
-              <li>Enable Multi-Factor Authentication</li>
-              <li>Block IPs with repeated failed transactions</li>
-              <li>Perform anomaly detection for night transactions</li>
-            </ul>
-          </div>
         </div>
       </main>
     </div>

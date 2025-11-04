@@ -1,4 +1,3 @@
-// UserTransactions.jsx
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import axios from "axios";
@@ -9,21 +8,19 @@ const socket = io("http://localhost:5000");
 export default function UserTransactions() {
   const [transactions, setTransactions] = useState([]);
   const [user, setUser] = useState(null);
+  const [filterStatus, setFilterStatus] = useState("All"); // ✅ Dropdown filter
+  const [searchTerm, setSearchTerm] = useState(""); // ✅ Search filter
 
   useEffect(() => {
-    // ✅ Load user from localStorage (assuming login stores user info)
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setUser(parsedUser);
 
-      // Fetch that user's previous transactions
       fetchUserTransactions(parsedUser._id);
 
-      // Register the socket for that user
       socket.emit("registerUser", parsedUser._id);
 
-      // Listen for new live transactions for that user
       socket.on("newTransaction", (txn) => {
         if (txn.user === parsedUser._id) {
           setTransactions((prev) => [txn, ...prev]);
@@ -36,7 +33,7 @@ export default function UserTransactions() {
     };
   }, []);
 
-  // ===== Function to fetch user's old transactions =====
+  // ✅ Fetch user's transactions
   const fetchUserTransactions = async (userId) => {
     try {
       const res = await axios.get(
@@ -48,11 +45,55 @@ export default function UserTransactions() {
     }
   };
 
+  // ✅ Filter logic: first by dropdown (Completed/Failed/All), then by search
+  const filteredTransactions = transactions
+    .filter((t) =>
+      filterStatus === "All"
+        ? true
+        : t.status.toLowerCase() === filterStatus.toLowerCase()
+    )
+    .filter(
+      (t) =>
+        t.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        t.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        t.amount.toString().includes(searchTerm)
+    );
+
   return (
     <div className="user-transactions-container">
       <h2>💳 My Transactions</h2>
       {user && <p className="welcome">Welcome, {user.name}</p>}
 
+      {/* === FILTERS SECTION (Dropdown + Search) === */}
+      <div className="filter-bar">
+        <div className="filter-item">
+          <label htmlFor="statusFilter">Filter by Status: </label>
+          <select
+            id="statusFilter"
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="filter-dropdown"
+          >
+            <option value="All">All</option>
+            <option value="Completed">Completed</option>
+            <option value="Failed">Failed</option>
+          </select>
+        </div>
+
+        <div className="filter-item">
+          <label htmlFor="searchBox">Search: </label>
+          <input
+            id="searchBox"
+            type="text"
+            placeholder="Search Credit, Debit, Amount, or Description..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+        </div>
+      </div>
+
+      {/* === TRANSACTIONS TABLE === */}
       <div className="user-table-container">
         <table className="user-table">
           <thead>
@@ -65,8 +106,8 @@ export default function UserTransactions() {
             </tr>
           </thead>
           <tbody>
-            {transactions.length > 0 ? (
-              transactions.map((t) => (
+            {filteredTransactions.length > 0 ? (
+              filteredTransactions.map((t) => (
                 <tr key={t._id}>
                   <td>₹{t.amount}</td>
                   <td>{t.type}</td>

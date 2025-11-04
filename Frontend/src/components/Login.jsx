@@ -7,10 +7,12 @@ const Login = ({ closePopup }) => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState({ text: "", type: "" });
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage({ text: "", type: "" });
 
     try {
       const response = await fetch("http://localhost:5000/api/auth/login", {
@@ -23,7 +25,6 @@ const Login = ({ closePopup }) => {
 
       if (response.ok) {
         // Save user info and token
-        console.log(data);
         localStorage.setItem(
           "user",
           JSON.stringify({
@@ -36,18 +37,20 @@ const Login = ({ closePopup }) => {
 
         if (data.token) localStorage.setItem("token", data.token);
 
-        alert(`✅ Welcome ${data.user.firstName}!`);
-        closePopup();
+        setMessage({ text: `✅ Welcome ${data.user.firstName}!`, type: "success" });
 
-        // Redirect based on role
-        if (data.user.role === "user") navigate("/Userdashboard");
-        else if (data.user.role === "admin") navigate("/Admindashboard");// normal user goes to home page
+        // Smooth redirect
+        setTimeout(() => {
+          closePopup();
+          if (data.user.role === "user") navigate("/Userdashboard");
+          else if (data.user.role === "admin") navigate("/Admindashboard");
+        }, 1500);
       } else {
-        alert(`❌ ${data.message || "Login failed"}`);
+        setMessage({ text: `❌ ${data.message || "Login failed"}`, type: "error" });
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert("⚠️ Error connecting to server");
+      setMessage({ text: "⚠️ Error connecting to server", type: "error" });
     }
   };
 
@@ -58,6 +61,12 @@ const Login = ({ closePopup }) => {
           ✖
         </button>
         <h2>Login</h2>
+
+        {message.text && (
+          <div className={`message-box ${message.type}`}>
+            {message.text}
+          </div>
+        )}
 
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="form-group">
@@ -82,7 +91,7 @@ const Login = ({ closePopup }) => {
 
           <div className="form-group">
             <label>Password</label>
-            {/* <div className="password-container"> */}
+            <div className="password-container">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
@@ -90,13 +99,13 @@ const Login = ({ closePopup }) => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              {/* <span
-                className="material-icons toggle-password"
+              <span
+                className="toggle-password"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? "visibility_off" : "visibility"}
-              </span> */}
-            {/* </div> */}
+                {showPassword ? "🙈" : "👁️"}
+              </span>
+            </div>
           </div>
 
           <button type="submit" className="login-btn">

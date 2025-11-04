@@ -1,20 +1,20 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // ✅ Added for navigation
 import {
   FaChartBar,
   FaExchangeAlt,
   FaCog,
   FaTachometerAlt,
   FaUserCircle,
-  FaTable,
   FaSignOutAlt,
   FaQuestionCircle,
-  FaUsers,
-  FaPlug,
   FaLock,
 } from "react-icons/fa";
 import "./Settings.css";
 
 const Settings = () => {
+  const navigate = useNavigate(); // ✅ Initialize navigate hook
+
   const [settings, setSettings] = useState({
     changePassword: true,
     twoFactorAuth: true,
@@ -42,7 +42,8 @@ const Settings = () => {
     alert("✅ Settings saved successfully!");
   };
 
- const handleLogout = () => {
+  // ✅ Fixed Logout function
+  const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
       localStorage.clear();
       navigate("/login");
@@ -55,22 +56,34 @@ const Settings = () => {
       <aside className="sidebar">
         <div className="user-section">
           <FaUserCircle className="user-icon" />
-          <h3></h3>
-          <p></p>
+          <h3>Welcome</h3>
+          <p>User Panel</p>
         </div>
 
         <nav className="nav-menu">
-          <a href="/Userdashboard"><FaTachometerAlt /> Dashboard</a>
-          <a href="/Transactions"><FaExchangeAlt /> Transactions</a>
-          <a href="/Reports"><FaChartBar /> Reports</a>
-          <a href="/Help"><FaQuestionCircle /> Help & Support</a>
-          {/* <a href="/Users"><FaUsers /> Users</a>
-          <a href="/APIs"><FaPlug /> APIs</a> */}
-          <a href="/Settings" className="active"><FaCog /> Settings</a>
-          <a href="/ChangePassword"><FaLock /> Change Password</a>
+          <a href="/Userdashboard">
+            <FaTachometerAlt /> Dashboard
+          </a>
+          <a href="/Transactions">
+            <FaExchangeAlt /> Transactions
+          </a>
+          <a href="/Reports">
+            <FaChartBar /> Reports
+          </a>
+          <a href="/Help">
+            <FaQuestionCircle /> Help & Support
+          </a>
+          <a href="/Settings" className="active">
+            <FaCog /> Settings
+          </a>
+          <a href="/Change-Password">
+            <FaLock /> Change Password
+          </a>
         </nav>
 
-        <button className="logout-btn" onClick={handleLogout}><FaSignOutAlt /> Logout</button>
+        <button className="logout-btn" onClick={handleLogout}>
+          <FaSignOutAlt /> Logout
+        </button>
       </aside>
 
       {/* Main Settings Content */}
@@ -79,7 +92,7 @@ const Settings = () => {
           <h2>⚙️ Settings</h2>
 
           <div className="settings-grid">
-            {/* User Profile Settings */}
+            {/* === User Profile Settings === */}
             <div className="settings-section">
               <h3>User Profile Settings</h3>
               {[
@@ -102,7 +115,7 @@ const Settings = () => {
               ))}
             </div>
 
-            {/* Fraud Detection Configuration */}
+            {/* === Fraud Detection Configuration === */}
             <div className="settings-section">
               <h3>Fraud Detection Configuration</h3>
               {[
@@ -125,7 +138,7 @@ const Settings = () => {
               ))}
             </div>
 
-            {/* Security Settings */}
+            {/* === Security Settings === */}
             <div className="settings-section">
               <h3>Security Settings</h3>
               {[
@@ -148,7 +161,7 @@ const Settings = () => {
               ))}
             </div>
 
-            {/* Alert & Notification Settings */}
+            {/* === Alert & Notification Settings === */}
             <div className="settings-section">
               <h3>Alert & Notification Settings</h3>
               {[

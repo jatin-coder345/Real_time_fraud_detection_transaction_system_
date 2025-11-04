@@ -12,6 +12,7 @@ import {
   FaSignOutAlt,
   FaShieldAlt,
   FaUserShield,
+  FaSpinner,
 } from "react-icons/fa";
 import "./AdminLiveTransactions.css";
 
@@ -21,6 +22,7 @@ const AdminLiveTransactions = () => {
   const navigate = useNavigate();
   const [transactions, setTransactions] = useState([]);
   const [admin, setAdmin] = useState(null);
+  const [loading, setLoading] = useState(true); // ✅ loader for fetching only
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -30,21 +32,24 @@ const AdminLiveTransactions = () => {
       navigate("/login");
     }
 
-    // Fetch all previous transactions
+    // ===== Fetch all previous transactions =====
     const fetchTransactions = async () => {
       try {
         const res = await axios.get("http://localhost:5000/api/transactions");
         setTransactions(res.data);
       } catch (err) {
         console.error("Error fetching transactions:", err);
+      } finally {
+        setLoading(false); // ✅ stop loader after fetch
       }
     };
     fetchTransactions();
 
-    // Register for real-time updates
+    // ===== Real-time Socket Updates =====
     socket.emit("registerAdmin");
     socket.on("adminTransaction", (txn) => {
       setTransactions((prev) => [txn, ...prev]);
+      setLoading(false); // ✅ ensure loader hides when real-time data comes
     });
 
     return () => socket.off("adminTransaction");
@@ -59,7 +64,7 @@ const AdminLiveTransactions = () => {
 
   return (
     <div className="admin-dashboard fullscreen">
-      {/* ===== Sidebar (Same as AdminDashboard) ===== */}
+      {/* ===== Sidebar ===== */}
       <aside className="admin-sidebar fullscreen-sidebar">
         <div className="sidebar-header">
           <FaShieldAlt className="sidebar-logo-icon" />
@@ -77,7 +82,10 @@ const AdminLiveTransactions = () => {
           <li onClick={() => navigate("/Ausers")}>
             <FaUsers className="menu-icon" /> Users
           </li>
-          <li className="active" onClick={() => navigate("/AdminLiveTransactions")}>
+          <li
+            className="active"
+            onClick={() => navigate("/AdminLiveTransactions")}
+          >
             <FaExchangeAlt className="menu-icon" /> Live Transactions
           </li>
           <li onClick={() => navigate("/Aapis")}>
@@ -104,20 +112,30 @@ const AdminLiveTransactions = () => {
 
         <section className="transactions-section">
           <div className="transactions-table-container">
-            <table className="transactions-table">
-              <thead>
-                <tr>
-                  <th>User ID</th>
-                  <th>Amount</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>Fraud</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {transactions.length > 0 ? (
-                  transactions.map((t) => (
+            {/* ✅ Loader shows ONLY while data is being fetched */}
+            {loading ? (
+              <div className="loader-container">
+                <FaSpinner className="loader-icon" />
+                <p>Loading live transactions...</p>
+              </div>
+            ) : transactions.length === 0 ? (
+              <div className="no-data">
+                <p>😕 No transactions found.</p>
+              </div>
+            ) : (
+              <table className="transactions-table">
+                <thead>
+                  <tr>
+                    <th>User ID</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Fraud</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {transactions.map((t) => (
                     <tr
                       key={t._id}
                       className={t.fraud_detected ? "fraud-row" : ""}
@@ -129,16 +147,10 @@ const AdminLiveTransactions = () => {
                       <td>{t.fraud_detected ? "🚨 Fraud" : "✅ Legit"}</td>
                       <td>{new Date(t.date).toLocaleString()}</td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="6" className="no-data">
-                      No transactions found
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </section>
       </main>

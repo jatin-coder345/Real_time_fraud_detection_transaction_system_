@@ -21,10 +21,11 @@ const SignUp = () => {
     role: "user",
   });
   const [errors, setErrors] = useState({});
+  const [message, setMessage] = useState({ text: "", type: "" });
 
   const images = [img1, img2, img3];
 
-  // Auto-change image every 3 seconds
+  // Auto image slider
   useEffect(() => {
     const interval = setInterval(
       () => setCurrentImage((prev) => (prev + 1) % images.length),
@@ -33,11 +34,20 @@ const SignUp = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // handle form input
-  const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  // ✅ Handle input changes + clear specific field error live
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
-  // form validation
+    // Clear error for the field being typed in
+    setErrors((prev) => {
+      const updated = { ...prev };
+      delete updated[name];
+      return updated;
+    });
+  };
+
+  // ✅ Validate all fields before submission
   const validateForm = () => {
     const newErrors = {};
     if (!formData.firstName.trim()) newErrors.firstName = "First name required";
@@ -48,13 +58,16 @@ const SignUp = () => {
       newErrors.phone = "Phone must be 10 digits";
     if (formData.password.length < 8)
       newErrors.password = "Password must be at least 8 characters";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // ✅ connect frontend to backend
+  // ✅ Connect frontend to backend
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage({ text: "", type: "" });
+
     if (!validateForm()) return;
 
     try {
@@ -67,14 +80,14 @@ const SignUp = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert("✅ Registration successful!");
-        setShowLogin(true); // redirect to login page after signup
+        setMessage({ text: "✅ Registration successful!", type: "success" });
+        setTimeout(() => setShowLogin(true), 1500);
       } else {
-        alert(`❌ ${data.message}`);
+        setMessage({ text: `❌ ${data.message}`, type: "error" });
       }
     } catch (error) {
       console.error("Signup error:", error);
-      alert("⚠️ Error connecting to server");
+      setMessage({ text: "⚠️ Error connecting to server", type: "error" });
     }
   };
 
@@ -101,6 +114,10 @@ const SignUp = () => {
       <div className="signup-right">
         <div className="signup-box">
           <h2>Create Your Account</h2>
+
+          {message.text && (
+            <div className={`message-box ${message.type}`}>{message.text}</div>
+          )}
 
           <form className="signup-form" onSubmit={handleSubmit}>
             <div className="form-row">
@@ -164,7 +181,7 @@ const SignUp = () => {
               {errors.phone && <span className="error">{errors.phone}</span>}
             </div>
 
-            {/* <div className="password-container"> */}
+            <div className="input-group password-group">
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
@@ -173,27 +190,27 @@ const SignUp = () => {
                 onChange={handleChange}
               />
               <span
-                className="material-icons toggle-password"
+                className="toggle-password"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? "visibility_off" : "visibility"}
+                {showPassword ? "🙈" : "👁️"}
               </span>
               {errors.password && (
                 <span className="error">{errors.password}</span>
               )}
-            {/* </div> */}
-            <div className="input-group">
-  <select
-    name="role"
-    value={formData.role}
-    onChange={handleChange}
-    className="role-select"
-  >
-    <option value="user">User</option>
-    <option value="admin">Admin</option>
-  </select>
-</div>
+            </div>
 
+            <div className="input-group">
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                className="role-select"
+              >
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
 
             <button type="submit" className="register-btn">
               Register
