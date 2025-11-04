@@ -53,10 +53,12 @@ const Ausers = () => {
     <div className="admin-dashboard fullscreen">
       {/* ===== Sidebar ===== */}
       <aside className="admin-sidebar fullscreen-sidebar">
+
         <div className="sidebar-header">
           <FaShieldAlt className="sidebar-logo-icon" />
           <h2 className="logo-text">Fraud Detection</h2>
         </div>
+
 
         <ul className="menu">
           <li onClick={() => navigate("/Admindashboard")}>
