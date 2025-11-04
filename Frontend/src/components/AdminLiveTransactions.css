@@ -304,3 +304,92 @@
     transform: rotate(360deg);
   }
 }
+
+/* ===== Loader Styling ===== */
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: #4a90e2;
+  font-size: 1.2rem;
+}
+
+.loader-icon {
+  font-size: 3rem;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Centers loader in page */
+.loader-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  text-align: center;
+}
+
+/* 🔹 Inline layout (symbol + text side by side) */
+.inline-loader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #4f46e5;
+}
+
+.inline-loader.small {
+  justify-content: center;
+}
+
+/* 🔄 Moving circular symbol */
+.moving-loader {
+  border: 4px solid #e0e7ff;
+  border-top: 4px solid #4f46e5;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  animation: spin 1s linear infinite;
+}
+
+.moving-loader.small {
+  width: 20px;
+  height: 20px;
+  border-width: 3px;
+}
+
+/* Rotation animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Text animation */
+.loading-text {
+  font-size: 17px;
+  font-weight: 500;
+  color: #4f46e5;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+.no-data {
+  text-align: center;
+  padding: 25px 0;
+}
+
