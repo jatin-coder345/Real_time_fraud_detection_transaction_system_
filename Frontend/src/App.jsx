@@ -16,7 +16,10 @@ import Aapis from "./components/Aapis";
 import Ahelp from "./components/Ahelp";
 import Asettings from "./components/Asettings";
 import  AdminLiveTransactions from "./components/AdminLiveTransactions";
+import PageNotFound from "./components/PageNotFound";
 import Profile from "./components/Profile";
+
+
 
 
 
@@ -50,7 +53,7 @@ function App() {
       <Route path="/transactions" element={<Transactions />} />
       
         Fallback for unknown routes
-        <Route path="*" element={<Navigate to="/home" replace />} />
+        {/* <Route path="*" element={<Navigate to="/home" replace />} /> */}
 
         <Route path="/change-password" element={<ChangePassword />} />
 
@@ -64,11 +67,13 @@ function App() {
         <Route path="/ahelp" element={<Ahelp />} />
         <Route path="/asettings" element={<Asettings />} />
         <Route path="/AdminLiveTransactions" element={<AdminLiveTransactions />} />
-        <Route path="/profile" element={<Profile />} />
+         <Route path="/Aprofile" element={<Profile />} />
+
+                {/* ✅ Catch-all 404 route */}
+        <Route path="*" element={<PageNotFound />} />
+
 
         
-
-
       </Routes>
     </Router>
   );

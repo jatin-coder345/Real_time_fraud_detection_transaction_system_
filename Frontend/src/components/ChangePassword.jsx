@@ -69,7 +69,7 @@ const ChangePassword = () => {
       <aside className="sidebar">
         <div className="user-section">
           <FaUserCircle className="user-icon" />
-          <h3>{loginId || "User"}</h3>
+          {/* <h3>{loginId || "User"}</h3> */}
         </div>
 
         <nav className="nav-menu">
