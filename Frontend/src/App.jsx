@@ -16,21 +16,8 @@ import Aapis from "./components/Aapis";
 import Ahelp from "./components/Ahelp";
 import Asettings from "./components/Asettings";
 import  AdminLiveTransactions from "./components/AdminLiveTransactions";
-// import  NotFound from "./components/NotFound";
 
-function PageNotFound() {
-  return (
-    <div style={{
-      textAlign: "center",
-      marginTop: "15%",
-      fontSize: "2rem",
-      color: "#ff4c4c",
-      fontWeight: "bold"
-    }}>
-      404 - Page Not Found
-    </div>
-  );
-}
+
 
 
 
@@ -62,7 +49,7 @@ function App() {
       <Route path="/transactions" element={<Transactions />} />
       
         Fallback for unknown routes
-       <Route path="*" element={<PageNotFound />} />
+        <Route path="*" element={<Navigate to="/home" replace />} />
 
         <Route path="/change-password" element={<ChangePassword />} />
 
