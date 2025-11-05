@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
@@ -7,12 +7,33 @@ const Login = ({ closePopup }) => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [message, setMessage] = useState({ text: "", type: "" });
+  const [message, setMessage] = useState({ text: "", type: "", duration: 3000 });
   const navigate = useNavigate();
+  const timerRef = useRef(null);
+
+  // clear any previous message timer before setting new one
+  useEffect(() => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (message.text) {
+      timerRef.current = setTimeout(() => {
+        setMessage({ text: "", type: "", duration: 3000 });
+      }, message.duration);
+    }
+    return () => clearTimeout(timerRef.current);
+  }, [message]);
+
+  const showMessage = (text, type, duration = 3000) => {
+    setMessage({ text, type, duration });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage({ text: "", type: "" });
+    showMessage("", "", 0);
+
+    if (!role) {
+      showMessage("❌ Invalid role selected", "error", 60000); // 1 minute
+      return;
+    }
 
     try {
       const response = await fetch("http://localhost:5000/api/auth/login", {
@@ -24,7 +45,6 @@ const Login = ({ closePopup }) => {
       const data = await response.json();
 
       if (response.ok) {
-        // Save user info and token
         localStorage.setItem(
           "user",
           JSON.stringify({
@@ -37,20 +57,19 @@ const Login = ({ closePopup }) => {
 
         if (data.token) localStorage.setItem("token", data.token);
 
-        setMessage({ text: `✅ Welcome ${data.user.firstName}!`, type: "success" });
+        showMessage(`✅ Welcome ${data.user.firstName}!`, "success");
 
-        // Smooth redirect
         setTimeout(() => {
           closePopup();
           if (data.user.role === "user") navigate("/Userdashboard");
           else if (data.user.role === "admin") navigate("/Admindashboard");
         }, 1500);
       } else {
-        setMessage({ text: `❌ ${data.message || "Login failed"}`, type: "error" });
+        showMessage(`❌ ${data.message || "Login failed"}`, "error");
       }
     } catch (error) {
       console.error("Login error:", error);
-      setMessage({ text: "⚠️ Error connecting to server", type: "error" });
+      showMessage("⚠️ Error connecting to server", "error", 60000); // 1 minute
     }
   };
 
@@ -63,15 +82,17 @@ const Login = ({ closePopup }) => {
         <h2>Login</h2>
 
         {message.text && (
-          <div className={`message-box ${message.type}`}>
-            {message.text}
-          </div>
+          <div className={`message-box ${message.type}`}>{message.text}</div>
         )}
 
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Login As</label>
-            <select required value={role} onChange={(e) => setRole(e.target.value)}>
+            <select
+              required
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            >
               <option value="">Select Role</option>
               <option value="admin">Admin</option>
               <option value="user">User</option>

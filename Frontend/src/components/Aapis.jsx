@@ -93,7 +93,7 @@ const Aapis = () => {
         </div>
 
         {/* <h3 className="admin-name">
-          <FaUserShield /> Admin Panel 🛡️
+          <FaUserShield /> Admin Panel 🛡
         </h3> */}
 
         <ul className="menu">
@@ -130,7 +130,7 @@ const Aapis = () => {
           {loading ? (
             <div className="loader-container">
               <div className="spinner"></div>
-              <p className="loading-text">Loading APIs...</p>
+              <p className="loading-text">Loading ...</p>
             </div>
           ) : message ? (
             <p className="error">{message}</p>
@@ -176,4 +176,4 @@ const Aapis = () => {
   );
 };
 
-export default Aapis;
+export default Aapis;
