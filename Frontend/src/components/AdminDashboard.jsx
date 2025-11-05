@@ -126,7 +126,7 @@ const AdminDashboard = () => {
         </div>
 
         <h3 className="admin-name">
-          <FaUserShield /> Admin: {admin ? admin.firstName : "Admin"}
+          {/* <FaUserShield /> Admin: {admin ? admin.firstName : "Admin"} */}
         </h3>
 
         <ul className="menu">

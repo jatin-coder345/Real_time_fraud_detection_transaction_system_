@@ -12,6 +12,7 @@ const transactionSchema = new mongoose.Schema({
     default: "completed",
   },
   fraud_detected: { type: Boolean, default: false },
+  ipAddress: { type: String }, // ✅ new field for tracking IP address
   date: { type: Date, default: Date.now },
 });
 
