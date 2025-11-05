@@ -128,7 +128,7 @@ const Help = () => {
                 <BookOpen className="icon" />
                 <h3>Knowledge Base</h3>
                 <p>Explore FAQs, user guides, and tutorials.</p>
-                <button className="learn-btn">Visit Hub</button>
+                <button className="learn-btn"  onClick={() => navigate("/knowledge-base")}>Visit Hub</button>
               </div>
             </div>
 

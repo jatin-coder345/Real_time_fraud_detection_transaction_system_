@@ -16,6 +16,7 @@ import Asettings from "./components/Asettings";
 import  AdminLiveTransactions from "./components/AdminLiveTransactions";
 import Profile from "./components/Profile";
 import PageNotFound from "./components/PageNotFound";
+import KnowledgeBase from "./components/knowledgebase";
 
 
 
@@ -68,6 +69,8 @@ function App() {
 
                 {/* ✅ Catch-all 404 route */}
         <Route path="*" element={<PageNotFound />} />
+          <Route path="/knowledge-base" element={<KnowledgeBase />} />
+
 
 
         
