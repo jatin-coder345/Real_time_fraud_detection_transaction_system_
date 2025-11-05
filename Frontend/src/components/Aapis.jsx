@@ -130,7 +130,7 @@ const Aapis = () => {
           {loading ? (
             <div className="loader-container">
               <div className="spinner"></div>
-              <p className="loading-text">Loading APIs...</p>
+              <p className="loading-text">Loading ...</p>
             </div>
           ) : message ? (
             <p className="error">{message}</p>
