@@ -208,7 +208,7 @@ const SignUp = () => {
                 className="role-select"
               >
                 <option value="user">User</option>
-                <option value="admin">Admin</option>
+                {/* <option value="admin">Admin</option> */}
               </select>
             </div>
 
