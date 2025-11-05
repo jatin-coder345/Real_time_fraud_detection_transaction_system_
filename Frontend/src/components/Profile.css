@@ -193,3 +193,12 @@
   color: #2563eb;
   font-weight: 600;
 }
+
+/* ✅ Disabled input styling (for non-editable email field) */
+.edit-form input[disabled] {
+  background-color: #f3f4f6; /* light gray background */
+  color: #6b7280; /* dimmed text */
+  cursor: not-allowed; /* show "not-allowed" cursor */
+  border: 1px solid #d1d5db; /* subtle border */
+  pointer-events: none; /* completely non-clickable */
+}

@@ -9,7 +9,9 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
-  const [message, setMessage] = useState(""); // success/error message
+
+  const [message, setMessage] = useState(""); // ✅ success/error message
+
   const [messageType, setMessageType] = useState(""); // "success" or "error"
   const [previewImage, setPreviewImage] = useState("");
 
@@ -64,8 +66,11 @@ const Profile = () => {
       localStorage.setItem("user", JSON.stringify(response.data.user));
       setUser(response.data.user);
       setIsEditing(false);
+
+      // ✅ Success message
       setMessage("Profile updated successfully!");
       setMessageType("success");
+
       setTimeout(() => setMessage(""), 3000);
     } catch (error) {
       console.error("Update error:", error);
@@ -92,11 +97,8 @@ const Profile = () => {
           )}
         </div>
 
-        {message && (
-          <div className={`message-box ${messageType}`}>
-            {message}
-          </div>
-        )}
+        {/* ✅ Message Box */}
+        {message && <div className={`message-box ${messageType}`}>{message}</div>}
 
         {!isEditing ? (
           <>
@@ -140,7 +142,14 @@ const Profile = () => {
                 onChange={handleChange}
               />
 
-              <label>Phone*</label>
+              <label>Email</label>
+              <input
+                name="email"
+                value={formData.email || ""}
+                disabled // ✅ email cannot be edited
+              />
+
+              <label>Phone</label>
               <input
                 name="phone"
                 value={formData.phone || ""}
