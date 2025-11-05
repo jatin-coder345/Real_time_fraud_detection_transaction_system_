@@ -161,5 +161,34 @@ router.get("/:id", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Server error while fetching user" });
   }
 });
+// 🟢 UPDATE USER DETAILS (Protected)
+router.put("/update/:id", verifyToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedData = req.body;
+
+    if (updatedData.password) {
+      return res.status(400).json({ message: "Password cannot be updated here" });
+    }
+
+    // Include profileImage if sent
+    const updatedUser = await User.findByIdAndUpdate(id, updatedData, {
+      new: true,
+      runValidators: true,
+    }).select("-password");
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "User profile updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Update user error:", error);
+    res.status(500).json({ message: "Server error while updating profile" });
+  }
+});
 
 export default router;
