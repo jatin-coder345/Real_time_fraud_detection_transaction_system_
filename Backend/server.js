@@ -5,6 +5,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import https from "https";
 
 import authRoutes from "./routes/authRoutes.js";
 import transactionRoutes from "./routes/transactionRoutes.js";
@@ -23,13 +24,53 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/transactions", transactionRoutes);
 
-// ====== Connect MongoDB ======
+// ====== Global Variables ======
+let publicIP = "127.0.0.1"; // default fallback
+let ALLOWED_IP_RANGE = { start: "127.0.0.1", end: "127.0.0.1" };
+
+// ====== Fetch Public IP and Configure Dynamic Range ======
+async function fetchPublicIP() {
+  return new Promise((resolve) => {
+    https
+      .get("https://api.ipify.org?format=json", (res) => {
+        let data = "";
+        res.on("data", (chunk) => (data += chunk));
+        res.on("end", () => {
+          try {
+            const json = JSON.parse(data);
+            if (json.ip) {
+              publicIP = json.ip;
+              console.log(`🌐 Public IP detected: ${publicIP}`);
+
+              // ✅ Extract first 3 parts of IP (e.g., "49.42.155")
+              const parts = publicIP.split(".");
+              if (parts.length === 4) {
+                const prefix = `${parts[0]}.${parts[1]}.${parts[2]}`;
+                ALLOWED_IP_RANGE = {
+                  start: `${prefix}.0`,
+                  end: `${prefix}.255`,
+                };
+                console.log(
+                  `🛡️ Allowed IP Range set dynamically: ${ALLOWED_IP_RANGE.start} - ${ALLOWED_IP_RANGE.end}`
+                );
+              }
+            }
+            resolve(publicIP);
+          } catch {
+            resolve(publicIP);
+          }
+        });
+      })
+      .on("error", () => resolve(publicIP));
+  });
+}
+
+// ====== MongoDB Connection ======
 mongoose
   .connect(process.env.MONGO_URI)
   .then(async () => {
     console.log("✅ MongoDB Connected");
 
-    // 🧹 Drop old index that caused duplicate key error
     try {
       const indexes = await Transaction.collection.indexes();
       const refIndex = indexes.find((i) => i.name === "referenceId_1");
@@ -40,23 +81,20 @@ mongoose
     } catch (err) {
       console.warn("⚠️ Could not drop referenceId index (might not exist):", err.message);
     }
+
+    await fetchPublicIP();
   })
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// ====== Setup Socket.IO ======
-const io = new Server(httpServer, {
-  cors: { origin: "*" },
-});
+// ====== Socket.IO Setup ======
+const io = new Server(httpServer, { cors: { origin: "*" } });
 
 io.on("connection", (socket) => {
   console.log("🟢 Client connected:", socket.id);
 
-  // ===== Listen for user-specific updates =====
   socket.on("registerUser", (userId) => {
     console.log(`📡 Listening for transactions of user: ${userId}`);
-
     const userChangeStream = Transaction.watch();
-
     userChangeStream.on("change", (change) => {
       if (change.operationType === "insert") {
         const newTxn = change.fullDocument;
@@ -65,26 +103,21 @@ io.on("connection", (socket) => {
         }
       }
     });
-
     socket.on("disconnect", () => {
       console.log(`🔴 User socket ${socket.id} disconnected`);
       userChangeStream.close();
     });
   });
 
-  // ===== Listen for admin (all users’ transactions) =====
   socket.on("registerAdmin", () => {
     console.log("🧑‍💼 Admin registered for all live transactions");
-
     const adminChangeStream = Transaction.watch();
-
     adminChangeStream.on("change", (change) => {
       if (change.operationType === "insert") {
         const newTxn = change.fullDocument;
-        io.emit("adminTransaction", newTxn); // emit to all admin clients
+        io.emit("adminTransaction", newTxn);
       }
     });
-
     socket.on("disconnect", () => {
       console.log(`🔴 Admin socket ${socket.id} disconnected`);
       adminChangeStream.close();
@@ -92,7 +125,21 @@ io.on("connection", (socket) => {
   });
 });
 
+// ====== Utility: Convert IP to Number ======
+function ipToNumber(ip) {
+  return ip.split(".").reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0);
+}
+
+function isIPInRange(ip, range) {
+  const ipNum = ipToNumber(ip);
+  const startNum = ipToNumber(range.start);
+  const endNum = ipToNumber(range.end);
+  return ipNum >= startNum && ipNum <= endNum;
+}
+
 // ====== Auto Transaction Generator ======
+const HIGH_AMOUNT_THRESHOLD = 40000;
+
 async function createAutoTransaction() {
   try {
     const users = await User.find();
@@ -104,27 +151,40 @@ async function createAutoTransaction() {
     const randomUser = users[Math.floor(Math.random() * users.length)];
     const randomAmount = Math.floor(Math.random() * 50000) + 500;
     const randomType = Math.random() > 0.5 ? "credit" : "debit";
-    const isFraud = randomAmount > 40000; // simple fraud rule
+    const ipToUse = publicIP;
+
+    // ✅ Fraud Detection
+    const isIPAllowed = isIPInRange(ipToUse, ALLOWED_IP_RANGE);
+    const isHighAmount = randomAmount > HIGH_AMOUNT_THRESHOLD;
+    const isFraud = !isIPAllowed || isHighAmount;
+
+    const description = isFraud
+      ? !isIPAllowed
+        ? `⚠️ IP ${ipToUse} out of allowed range (${ALLOWED_IP_RANGE.start} - ${ALLOWED_IP_RANGE.end})`
+        : "⚠️ High-value transaction flagged"
+      : "Normal transaction";
 
     const txn = new Transaction({
       user: randomUser._id,
       amount: randomAmount,
       type: randomType,
-      description: isFraud
-        ? "⚠️ Suspicious activity detected"
-        : "Normal transaction",
+      ipAddress: ipToUse,
+      description,
       status: isFraud ? "failed" : "completed",
       fraud_detected: isFraud,
     });
 
     await txn.save();
-    console.log(`💸 Auto Transaction for ${randomUser._id}: ₹${randomAmount} (${txn.type})`);
+
+    console.log(
+      `💸 Txn for ${randomUser._id}: ₹${randomAmount} (${txn.type}) | IP: ${ipToUse} | Fraud: ${isFraud}`
+    );
   } catch (err) {
     console.error("❌ Error creating auto transaction:", err.message);
   }
 }
 
-// Run auto generator every 10 seconds
+// Run generator every 10 seconds
 setInterval(createAutoTransaction, 10000);
 
 // ====== Start Server ======

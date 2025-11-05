@@ -107,13 +107,19 @@ const Reports = () => {
     });
 
     // ===== Prepare Chart Data =====
-    // --- Weekly trend
     const dailyMap = {};
+
     transactions.forEach((t) => {
-      const day = new Date(t.createdAt).toLocaleDateString("en-US", {
-        weekday: "short",
-      });
-      dailyMap[day] = (dailyMap[day] || 0) + 1;
+      const rawDate = t.createdAt || t.date || t.timestamp;
+      const parsedDate = new Date(rawDate);
+
+      // ✅ Only include valid dates
+      if (!isNaN(parsedDate)) {
+        const day = parsedDate.toLocaleDateString("en-US", { weekday: "short" });
+        dailyMap[day] = (dailyMap[day] || 0) + 1;
+      } else {
+        console.warn("Invalid date found:", t);
+      }
     });
 
     const trendArr = Object.keys(dailyMap).map((d) => ({
@@ -148,8 +154,6 @@ const Reports = () => {
       <aside className="sidebar">
         <div className="user-section">
           <FaUserCircle className="user-icon" />
-          {/* <h3>{user?.firstName || "User"}</h3>
-          <p>{user?.role || "Member"}</p> */}
         </div>
 
         <nav className="nav-menu">
@@ -165,9 +169,6 @@ const Reports = () => {
           <a href="/help">
             <FaQuestionCircle /> Help & Support
           </a>
-          {/* <a href="/settings">
-            <FaCog /> Settings
-          </a> */}
           <a href="/change-password">
             <FaLock /> Change Password
           </a>
@@ -257,38 +258,38 @@ const Reports = () => {
         <div className="table-section">
           <h3>📋 Recent Reports</h3>
           <table>
-  <thead>
-    <tr>
-      <th>Transaction ID</th>
-      <th>Date</th>
-      <th>Amount</th>
-      <th>Status</th>
-      <th>Fraud</th>
-    </tr>
-  </thead>
-  <tbody>
-    {transactions.slice(0, 8).map((t) => {
-      const transactionDate =
-        t.createdAt || t.date || t.timestamp || null; // ✅ check possible fields
-      return (
-        <tr key={t._id}>
-          <td>{t._id.slice(-6).toUpperCase()}</td>
-          <td>
-            {transactionDate
-              ? new Date(transactionDate).toLocaleString()
-              : "N/A"}
-          </td>
-          <td>₹{t.amount}</td>
-          <td className={t.status === "failed" ? "failed" : "success"}>
-            {t.status}
-          </td>
-          <td>{t.fraud_detected ? "🚨" : "✅"}</td>
-        </tr>
-      );
-    })}
-  </tbody>
-</table>
-
+            <thead>
+              <tr>
+                <th>Transaction ID</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Fraud</th>
+              </tr>
+            </thead>
+            <tbody>
+              {transactions.slice(0, 8).map((t) => {
+                const transactionDate =
+                  t.createdAt || t.date || t.timestamp || null;
+                const parsedDate = new Date(transactionDate);
+                return (
+                  <tr key={t._id}>
+                    <td>{t._id.slice(-6).toUpperCase()}</td>
+                    <td>
+                      {!isNaN(parsedDate)
+                        ? parsedDate.toLocaleString()
+                        : "N/A"}
+                    </td>
+                    <td>₹{t.amount}</td>
+                    <td className={t.status === "failed" ? "failed" : "success"}>
+                      {t.status}
+                    </td>
+                    <td>{t.fraud_detected ? "🚨" : "✅"}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </main>
     </div>
