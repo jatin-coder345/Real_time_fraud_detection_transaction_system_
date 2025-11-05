@@ -9,22 +9,50 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
-  const [message, setMessage] = useState(""); // ✅ success/error message
-  const [messageType, setMessageType] = useState(""); // "success" or "error"
 
+  const [message, setMessage] = useState(""); // ✅ success/error message
+
+  const [messageType, setMessageType] = useState(""); // "success" or "error"
+  const [previewImage, setPreviewImage] = useState("");
+
+  // Load user data from localStorage on mount
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) {
       setUser(storedUser);
       setFormData(storedUser);
+      setPreviewImage(storedUser.profileImage || "");
     }
   }, []);
 
+  // Handle input change
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Handle image upload
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result);
+        setFormData({ ...formData, profileImage: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Save updated profile
   const handleSave = async () => {
+    // Validation
+    if (!formData.firstName || !formData.lastName || !formData.phone) {
+      setMessage("Please fill all required fields!");
+      setMessageType("error");
+      setTimeout(() => setMessage(""), 3000);
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
@@ -62,7 +90,11 @@ const Profile = () => {
         </button>
 
         <div className="profile-avatar">
-          <FaUser size={90} color="#2563eb" />
+          {previewImage ? (
+            <img src={previewImage} alt="Profile" className="profile-photo" />
+          ) : (
+            <FaUser size={90} color="#2563eb" />
+          )}
         </div>
 
         {/* ✅ Message Box */}
@@ -78,8 +110,7 @@ const Profile = () => {
                 <FaEnvelope /> <strong>Email:</strong> {user.email}
               </p>
               <p>
-                <FaPhone /> <strong>Contact:</strong>{" "}
-                {user.phone || "Not provided"}
+                <FaPhone /> <strong>Contact:</strong> {user.phone || "Not provided"}
               </p>
               <p>
                 <FaUser /> <strong>User ID:</strong> {user._id}
@@ -97,14 +128,14 @@ const Profile = () => {
           <>
             <h2>Edit Profile</h2>
             <div className="edit-form">
-              <label>First Name</label>
+              <label>First Name*</label>
               <input
                 name="firstName"
                 value={formData.firstName || ""}
                 onChange={handleChange}
               />
 
-              <label>Last Name</label>
+              <label>Last Name*</label>
               <input
                 name="lastName"
                 value={formData.lastName || ""}
@@ -124,6 +155,9 @@ const Profile = () => {
                 value={formData.phone || ""}
                 onChange={handleChange}
               />
+
+              <label>Profile Photo</label>
+              <input type="file" accept="image/*" onChange={handleImageChange} />
 
               <div className="edit-actions">
                 <button onClick={handleSave}>Save</button>
