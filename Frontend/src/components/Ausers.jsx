@@ -45,7 +45,7 @@ const Ausers = () => {
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-    alert("You have been logged out.");
+    // alert("You have been logged out.");
     navigate("/home");
   };
 
