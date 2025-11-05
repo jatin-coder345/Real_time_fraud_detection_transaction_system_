@@ -9,7 +9,7 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
-  const [message, setMessage] = useState(""); // ✅ for success/error messages
+  const [message, setMessage] = useState(""); // ✅ success/error message
   const [messageType, setMessageType] = useState(""); // "success" or "error"
 
   useEffect(() => {
@@ -39,17 +39,15 @@ const Profile = () => {
       setUser(response.data.user);
       setIsEditing(false);
 
-      // ✅ Show success message in the UI
+      // ✅ Success message
       setMessage("Profile updated successfully!");
       setMessageType("success");
 
-      // Hide message after 3 seconds
       setTimeout(() => setMessage(""), 3000);
     } catch (error) {
       console.error("Update error:", error);
       setMessage("Failed to update profile.");
       setMessageType("error");
-
       setTimeout(() => setMessage(""), 3000);
     }
   };
@@ -68,11 +66,7 @@ const Profile = () => {
         </div>
 
         {/* ✅ Message Box */}
-        {message && (
-          <div className={`message-box ${messageType}`}>
-            {message}
-          </div>
-        )}
+        {message && <div className={`message-box ${messageType}`}>{message}</div>}
 
         {!isEditing ? (
           <>
@@ -121,7 +115,7 @@ const Profile = () => {
               <input
                 name="email"
                 value={formData.email || ""}
-                onChange={handleChange}
+                disabled // ✅ email cannot be edited
               />
 
               <label>Phone</label>
