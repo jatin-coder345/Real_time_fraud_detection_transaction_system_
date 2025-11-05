@@ -155,3 +155,41 @@
     transform: translateY(-10px);
   }
 }
+.profile-photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #2563eb;
+}
+
+.upload-btn {
+  margin-top: 10px;
+  display: inline-block;
+  background-color: #25d7eb;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease;
+}
+
+.upload-btn:hover {
+  background-color: #19c0aa;
+}
+.profile-photo {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.upload-container {
+  margin-top: 10px;
+}
+.upload-btn {
+  cursor: pointer;
+  color: #2563eb;
+  font-weight: 600;
+}
