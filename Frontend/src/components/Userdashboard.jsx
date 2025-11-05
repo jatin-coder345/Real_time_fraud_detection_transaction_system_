@@ -177,7 +177,7 @@ const UserDashboard = () => {
             </button> */}
             {/*<button className="logout-popup" onClick={handleLogout}>
               <FaSignOutAlt /> Logout
-            </button>*/}.
+            </button>*/}
           </div>
         )}
 
