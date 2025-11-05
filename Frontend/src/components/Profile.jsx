@@ -9,8 +9,8 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
-  const [message, setMessage] = useState(""); // ✅ for success/error messages
-  const [messageType, setMessageType] = useState(""); // "success" or "error"
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState(""); // success / error
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -24,7 +24,37 @@ const Profile = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const validateForm = () => {
+    const { firstName, lastName, phone } = formData;
+
+    if (!firstName || !lastName || !phone) {
+      showPopup("⚠️ Please fill in all fields.", "error");
+      return false;
+    }
+
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(phone)) {
+      showPopup("⚠️ Enter a valid 10-digit phone number.", "error");
+      return false;
+    }
+
+    return true;
+  };
+
+  const showPopup = (msg, type) => {
+    setMessage(msg);
+    setMessageType(type);
+
+    // Popup stays visible for exactly 3 seconds
+    setTimeout(() => {
+      setMessage("");
+      setMessageType("");
+    }, 3000);
+  };
+
   const handleSave = async () => {
+    if (!validateForm()) return;
+
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
@@ -39,18 +69,10 @@ const Profile = () => {
       setUser(response.data.user);
       setIsEditing(false);
 
-      // ✅ Show success message in the UI
-      setMessage("Profile updated successfully!");
-      setMessageType("success");
-
-      // Hide message after 3 seconds
-      setTimeout(() => setMessage(""), 3000);
+      showPopup("✅ Profile updated successfully!", "success");
     } catch (error) {
       console.error("Update error:", error);
-      setMessage("Failed to update profile.");
-      setMessageType("error");
-
-      setTimeout(() => setMessage(""), 3000);
+      showPopup("❌ Failed to update profile.", "error");
     }
   };
 
@@ -67,7 +89,7 @@ const Profile = () => {
           <FaUser size={90} color="#2563eb" />
         </div>
 
-        {/* ✅ Message Box */}
+        {/* ✅ Popup message */}
         {message && (
           <div className={`message-box ${messageType}`}>
             {message}
@@ -80,19 +102,10 @@ const Profile = () => {
             <p className="role-text">{user.role}</p>
 
             <div className="profile-info">
-              <p>
-                <FaEnvelope /> <strong>Email:</strong> {user.email}
-              </p>
-              <p>
-                <FaPhone /> <strong>Contact:</strong>{" "}
-                {user.phone || "Not provided"}
-              </p>
-              <p>
-                <FaUser /> <strong>User ID:</strong> {user._id}
-              </p>
-              <p>
-                <FaUser /> <strong>Username/Login ID:</strong> {user.userId}
-              </p>
+              <p><FaEnvelope /> <strong>Email:</strong> {user.email}</p>
+              <p><FaPhone /> <strong>Contact:</strong> {user.phone || "Not provided"}</p>
+              <p><FaUser /> <strong>User ID:</strong> {user._id}</p>
+              <p><FaUser /> <strong>Username/Login ID:</strong> {user.userId}</p>
             </div>
 
             <button className="edit-btn" onClick={() => setIsEditing(true)}>
@@ -117,16 +130,10 @@ const Profile = () => {
                 onChange={handleChange}
               />
 
-              <label>Email</label>
-              <input
-                name="email"
-                value={formData.email || ""}
-                onChange={handleChange}
-              />
-
               <label>Phone</label>
               <input
                 name="phone"
+                type="tel"
                 value={formData.phone || ""}
                 onChange={handleChange}
               />
