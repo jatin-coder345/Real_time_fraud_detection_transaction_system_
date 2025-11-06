@@ -102,55 +102,28 @@ select:focus {
   background: #2f63a4;
 }
 
-.signup-text {
-  text-align: center;
-  font-size: 0.9rem;
-  margin-top: 0.8rem;
-}
-
-.signup-text a {
-  color: black;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.signup-text a:hover {
-  text-decoration: underline;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.message-box {
-  margin-bottom: 15px;
-  padding: 10px;
+/* 5 SECOND POPUP CSS */
+.popmsg {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 14px 22px;
   border-radius: 8px;
-  font-size: 0.95rem;
-  text-align: center;
-  animation: fadeIn 0.3s ease-in-out;
+  font-weight: 600;
+  animation: fadeHold 5s ease-in-out forwards;
+  z-index: 999999;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
-.message-box.success {
-  background-color: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
+.popmsg.success {
+  background: #d1fae5;
+  color: #065f46;
 }
 
-.message-box.error {
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes fadeHold {
+  0% { opacity:0; transform: translateY(-10px); }
+  5%,90% { opacity:1; transform: translateY(0); }
+  100% { opacity:0; transform: translateY(-10px); }
 }
