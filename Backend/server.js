@@ -18,7 +18,8 @@ const httpServer = createServer(app);
 
 // ====== Middleware ======
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "10mb" })); // ✅ allow Base64 image uploads
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // ====== Routes ======
 app.use("/api/auth", authRoutes);
@@ -42,7 +43,6 @@ async function fetchPublicIP() {
               publicIP = json.ip;
               console.log(`🌐 Public IP detected: ${publicIP}`);
 
-              // ✅ Extract first 3 parts of IP (e.g., "49.42.155")
               const parts = publicIP.split(".");
               if (parts.length === 4) {
                 const prefix = `${parts[0]}.${parts[1]}.${parts[2]}`;
@@ -153,7 +153,6 @@ async function createAutoTransaction() {
     const randomType = Math.random() > 0.5 ? "credit" : "debit";
     const ipToUse = publicIP;
 
-    // ✅ Fraud Detection
     const isIPAllowed = isIPInRange(ipToUse, ALLOWED_IP_RANGE);
     const isHighAmount = randomAmount > HIGH_AMOUNT_THRESHOLD;
     const isFraud = !isIPAllowed || isHighAmount;
