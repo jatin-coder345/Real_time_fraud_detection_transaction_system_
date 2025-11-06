@@ -9,8 +9,6 @@ import {
   FaSignOutAlt,
   FaQuestionCircle,
   FaLock,
-  FaEye,
-  FaEyeSlash,
 } from "react-icons/fa";
 import cpassword from "../assets/cpassword.jpeg";
 import "./ChangePassword.css";
@@ -21,10 +19,6 @@ const ChangePassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
-
-  const [showOldPassword, setShowOldPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -113,78 +107,39 @@ const ChangePassword = () => {
           <h2>Change Password</h2>
 
           <form onSubmit={handleChangePassword}>
+            {/* ===== Login ID ===== */}
             <label>Email/User ID</label>
             <input type="text" value={loginId} disabled />
 
             {/* ===== Old Password ===== */}
-<label>Old Password</label>
-<div className="password-wrapper">
-  <input
-    type={showOldPassword ? "text" : "password"}
-    value={oldPassword}
-    onChange={(e) => setOldPassword(e.target.value)}
-    placeholder="Enter old password"
-    required
-  />
-  {showOldPassword ? (
-    <FaEyeSlash
-      className="eye-icon"
-      onClick={() => setShowOldPassword(false)}
-    />
-  ) : (
-    <FaEye
-      className={`eye-icon ${showOldPassword ? "active" : ""}`}
-      onClick={() => setShowOldPassword(true)}
-    />
-  )}
-</div>
-
+            <label>Old Password</label>
+            <input
+              type="password"
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+              placeholder="Enter old password"
+              required
+            />
 
             {/* ===== New Password ===== */}
             <label>New Password</label>
-            <div className="password-wrapper">
-              <input
-                type={showNewPassword ? "text" : "password"}
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Enter new password"
-                required
-              />
-              {showNewPassword ? (
-                <FaEyeSlash
-                  className="eye-icon"
-                  onClick={() => setShowNewPassword(false)}
-                />
-              ) : (
-                <FaEye
-                  className="eye-icon"
-                  onClick={() => setShowNewPassword(true)}
-                />
-              )}
-            </div>
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Enter new password"
+              required
+            />
 
             {/* ===== Confirm New Password ===== */}
             <label>Confirm New Password</label>
-            <div className="password-wrapper">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Confirm new password"
-                required
-              />
-              {showConfirmPassword ? (
-                <FaEyeSlash
-                  className="eye-icon"
-                  onClick={() => setShowConfirmPassword(false)}
-                />
-              ) : (
-                <FaEye
-                  className="eye-icon"
-                  onClick={() => setShowConfirmPassword(true)}
-                />
-              )}
-            </div>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm new password"
+              required
+            />
 
             <button type="submit">Update Password</button>
           </form>
