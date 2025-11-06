@@ -14,7 +14,7 @@
   overflow: hidden;      /* Prevent scroll issues */
 }
 
-/* --- Popup stays centered no matter zoom --- */
+/* popup box */
 .login-popup {
   background: #ffffff;
   border-radius: 16px;
@@ -22,9 +22,7 @@
   width: min(380px, 90%);  /* Responsive size */
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   position: relative;
-  z-index: 10000;          /* ⬆️ Higher than overlay */
-  animation: fadeIn 0.3s ease;
-  transform: translateZ(0); /* Prevent clipping on zoom */
+  animation: fadeInPopup 0.3s ease;
 }
 
 
@@ -40,11 +38,12 @@
 }
 
 .login-popup h2 {
-  color: #000000;
+  color: #000;
   text-align: center;
   margin-bottom: 1.2rem;
 }
 
+/* form */
 .login-form {
   display: flex;
   flex-direction: column;
@@ -60,7 +59,7 @@
 label {
   font-weight: 500;
   margin-bottom: 0.3rem;
-  color: #333333;
+  color: #333;
 }
 
 input,
@@ -82,7 +81,8 @@ select:focus {
   border-color: #3674b5;
   box-shadow: 0 0 5px #a1e3fc;
 }
-/* ✅ Fix for eye icon position inside password field */
+
+/* password input + icon */
 .password-container {
   position: relative;
   width: 100%;
@@ -121,8 +121,7 @@ select:focus {
   color: #2f63a4;
 }
 
-
-
+/* button */
 .login-btn {
   background: linear-gradient(90deg, #3674b5, #578fca);
   color: white;
@@ -139,6 +138,7 @@ select:focus {
   background: #2f63a4;
 }
 
+/* bottom text */
 .signup-text {
   text-align: center;
   font-size: 0.9rem;
@@ -155,24 +155,14 @@ select:focus {
   text-decoration: underline;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
+/* message box */
 .message-box {
   margin-bottom: 15px;
   padding: 10px;
   border-radius: 8px;
   font-size: 0.95rem;
   text-align: center;
-  animation: fadeIn 0.3s ease-in-out;
+  animation: fadeInMessage 0.3s ease-in-out;
 }
 
 .message-box.success {
@@ -187,9 +177,27 @@ select:focus {
   border: 1px solid #f5c6cb;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
+/* animations */
+@keyframes fadeInPopup {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInMessage {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ---------------------------

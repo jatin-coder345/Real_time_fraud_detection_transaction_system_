@@ -93,7 +93,7 @@ const Aapis = () => {
         </div>
 
         {/* <h3 className="admin-name">
-          <FaUserShield /> Admin Panel 🛡️
+          <FaUserShield /> Admin Panel 🛡
         </h3> */}
 
         <ul className="menu">
@@ -176,4 +176,4 @@ const Aapis = () => {
   );
 };
 
-export default Aapis;
+export default Aapis;

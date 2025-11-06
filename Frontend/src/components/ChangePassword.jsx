@@ -4,14 +4,13 @@ import axios from "axios";
 import {
   FaChartBar,
   FaExchangeAlt,
-  FaCog,
   FaTachometerAlt,
   FaUserCircle,
   FaSignOutAlt,
   FaQuestionCircle,
   FaLock,
 } from "react-icons/fa";
-import cpassword from "../assets/cpassword.jpeg"; // ✅ Background image import
+import cpassword from "../assets/cpassword.jpeg";
 import "./ChangePassword.css";
 
 const ChangePassword = () => {
@@ -20,15 +19,14 @@ const ChangePassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
+
   const navigate = useNavigate();
 
-  // ✅ Fetch user from localStorage
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) setLoginId(storedUser.loginId);
   }, []);
 
-  // ✅ Handle password change
   const handleChangePassword = async (e) => {
     e.preventDefault();
 
@@ -60,10 +58,9 @@ const ChangePassword = () => {
     }
   };
 
-  // ✅ Updated logout — no confirmation popup
   const handleLogout = () => {
-    localStorage.clear(); // clear user session
-    navigate("/home"); // instantly redirect to home
+    localStorage.clear();
+    navigate("/home");
   };
 
   return (
@@ -72,7 +69,6 @@ const ChangePassword = () => {
       <aside className="sidebar">
         <div className="user-section">
           <FaUserCircle className="user-icon" />
-          {/* <h3>{loginId || "User"}</h3> */}
         </div>
 
         <nav className="nav-menu">
@@ -88,7 +84,6 @@ const ChangePassword = () => {
           <a href="/Help">
             <FaQuestionCircle /> Help & Support
           </a>
-          {/* <a href="/Settings"><FaCog /> Settings</a> */}
           <a href="/ChangePassword" className="active">
             <FaLock /> Change Password
           </a>
@@ -110,38 +105,54 @@ const ChangePassword = () => {
       >
         <div className="change-password-container">
           <h2>Change Password</h2>
+
           <form onSubmit={handleChangePassword}>
+            {/* ===== Login ID ===== */}
             <label>Email/User ID</label>
             <input type="text" value={loginId} disabled />
 
+            {/* ===== Old Password ===== */}
             <label>Old Password</label>
             <input
               type="password"
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
+              placeholder="Enter old password"
               required
             />
 
+            {/* ===== New Password ===== */}
             <label>New Password</label>
             <input
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Enter new password"
               required
             />
 
+            {/* ===== Confirm New Password ===== */}
             <label>Confirm New Password</label>
             <input
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm new password"
               required
             />
 
             <button type="submit">Update Password</button>
           </form>
 
-          {message && <p className="message">{message}</p>}
+          {message && (
+            <p
+              className={`message ${
+                message.includes("✅") ? "success" : "error"
+              }`}
+            >
+              {message}
+            </p>
+          )}
         </div>
       </main>
     </div>
