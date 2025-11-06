@@ -546,3 +546,9 @@ html, body {
   color: #111827;
 }
 
+.home-container {
+  position: relative;
+  z-index: 1; /* ✅ keep low */
+  background-color: #3674b5; /* blue background */
+  min-height: 100vh;
+}

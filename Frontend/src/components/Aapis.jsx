@@ -28,38 +28,38 @@ const Aapis = () => {
         const fakeApiData = [
           {
             _id: "api001",
-            name: "Transaction Validator API",
-            endpoint: "/api/validate/transaction",
+            name: "Login Api",
+            endpoint: "/api/auth/login",
             createdBy: "Admin",
             isActive: true,
           },
           {
             _id: "api002",
-            name: "Fraud Detection API",
-            endpoint: "/api/fraud/check",
-            createdBy: "System",
+            name: "Signup Api",
+            endpoint: "/api/auth/Signup",
+            createdBy: "Admin",
             isActive: true,
           },
           {
             _id: "api003",
-            name: "User Risk Analyzer",
-            endpoint: "/api/users/risk-score",
-            createdBy: "DevOps",
-            isActive: false,
+            name: "Change Password Api",
+            endpoint: "/api/auth/change-password",
+            createdBy: "Admin",
+            isActive: true,
           },
           {
             _id: "api004",
-            name: "Data Logging API",
-            endpoint: "/api/logs/store",
+            name: "User Trasanctions Api",
+            endpoint: "/api/transactions/user/${userId}",
             createdBy: "Admin",
             isActive: true,
           },
           {
             _id: "api005",
-            name: "Notification Sender",
-            endpoint: "/api/notify/send",
-            createdBy: "Automation",
-            isActive: false,
+            name: "Live Transaction Api",
+            endpoint: "/api/transactions",
+            createdBy: "Admin",
+            isActive: true,
           },
         ];
 
@@ -79,7 +79,7 @@ const Aapis = () => {
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-    alert("You have been logged out.");
+    // alert("You have been logged out.");
     navigate("/home");
   };
 

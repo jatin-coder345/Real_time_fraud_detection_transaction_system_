@@ -96,7 +96,7 @@ const AdminDashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-    alert("You have been logged out.");
+    // alert("You have been logged out.");
     navigate("/home");
   };
 
@@ -126,7 +126,7 @@ const AdminDashboard = () => {
         </div>
 
         <h3 className="admin-name">
-          <FaUserShield /> Admin: {admin ? admin.firstName : "Admin"}
+          {/* <FaUserShield /> Admin: {admin ? admin.firstName : "Admin"} */}
         </h3>
 
         <ul className="menu">

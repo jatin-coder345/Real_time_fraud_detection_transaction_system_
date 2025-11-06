@@ -55,7 +55,7 @@ const SignUp = () => {
     if (!formData.userId.trim()) newErrors.userId = "User ID required";
     if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Invalid email";
     if (!/^[0-9]{10}$/.test(formData.phone))
-      newErrors.phone = "Phone must be 10 digits";
+      newErrors.phone = "Phone number must be 10 digits";
     if (formData.password.length < 8)
       newErrors.password = "Password must be at least 8 characters";
 
@@ -208,7 +208,7 @@ const SignUp = () => {
                 className="role-select"
               >
                 <option value="user">User</option>
-                <option value="admin">Admin</option>
+                {/* <option value="admin">Admin</option> */}
               </select>
             </div>
 

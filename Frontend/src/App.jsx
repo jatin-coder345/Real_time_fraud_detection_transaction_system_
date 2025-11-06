@@ -10,14 +10,13 @@ import Reports from "./components/Reports";
 import Settings from "./components/Settings";
 import Users from "./components/Users";
 import Help from "./components/Help";
-import APIs from "./components/APIs";
 import Ausers from "./components/Ausers";
 import Aapis from "./components/Aapis";
-import Ahelp from "./components/Ahelp";
 import Asettings from "./components/Asettings";
 import  AdminLiveTransactions from "./components/AdminLiveTransactions";
 import Profile from "./components/Profile";
 import PageNotFound from "./components/PageNotFound";
+import KnowledgeBase from "./components/knowledgebase";
 
 
 
@@ -61,10 +60,8 @@ function App() {
         <Route path="/settings" element={<Settings />} />
         <Route path="/users" element={<Users />} />
         <Route path="/help" element={<Help />} />
-        <Route path="/apis" element={<APIs />} />
         <Route path="/ausers" element={<Ausers />} />
         <Route path="/Aapis" element={<Aapis />} />
-        <Route path="/ahelp" element={<Ahelp />} />
         <Route path="/asettings" element={<Asettings />} />
         <Route path="/AdminLiveTransactions" element={<AdminLiveTransactions />} />
           
@@ -72,6 +69,8 @@ function App() {
 
                 {/* ✅ Catch-all 404 route */}
         <Route path="*" element={<PageNotFound />} />
+          <Route path="/knowledge-base" element={<KnowledgeBase />} />
+
 
 
         

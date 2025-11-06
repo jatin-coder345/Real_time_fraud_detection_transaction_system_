@@ -1,15 +1,17 @@
+/* --- Overlay always covers full screen --- */
 .login-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;          /* Full viewport width */
+  height: 100vh;         /* Full viewport height */
   background: rgba(0, 0, 0, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 999;
+  z-index: 9999;         /* ⬆️ Highest layer */
   backdrop-filter: blur(4px);
+  overflow: hidden;      /* Prevent scroll issues */
 }
 
 /* popup box */
@@ -17,11 +19,12 @@
   background: #ffffff;
   border-radius: 16px;
   padding: 2rem 2.5rem;
-  width: 380px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  width: min(380px, 90%);  /* Responsive size */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   position: relative;
   animation: fadeInPopup 0.3s ease;
 }
+
 
 .close-btn {
   position: absolute;
@@ -61,13 +64,17 @@ label {
 
 input,
 select {
+  width: 100%;
+  height: 45px; /* same fixed height for all */
   padding: 0.8rem;
   border-radius: 8px;
   border: 1px solid #ccc;
   outline: none;
   font-size: 1rem;
   transition: 0.2s ease;
+  box-sizing: border-box;
 }
+
 
 input:focus,
 select:focus {
@@ -77,16 +84,41 @@ select:focus {
 
 /* password input + icon */
 .password-container {
-  display: flex;
-  align-items: center;
   position: relative;
+  width: 100%;
 }
 
+.password-container input {
+  width: 100%;
+  height: 45px; /* same height as others */
+  padding: 0.8rem 2.5rem 0.8rem 0.8rem; /* right padding for icon space */
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.password-container input:focus {
+  border-color: #3674b5;
+  box-shadow: 0 0 5px #a1e3fc;
+}
+
+/* 👁️ Eye icon styling */
 .toggle-password {
   position: absolute;
-  right: 10px;
-  cursor: pointer;
+  right: 15px;       /* ⬅️ perfectly inside the input */
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
   color: #3674b5;
+  cursor: pointer;
+  user-select: none;
+  z-index: 2;         /* ensures icon stays visible */
+  padding-top: 30px;
+}
+
+.toggle-password:hover {
+  color: #2f63a4;
 }
 
 /* button */
@@ -167,3 +199,107 @@ select:focus {
     transform: translateY(0);
   }
 }
+
+/* ---------------------------
+  Force eye icon to sit inside
+  the password input on the right
+   (works with your existing markup)
+   Paste this at the end of Login.css
+   --------------------------- */
+
+/* Make .form-group a positioning context (harmless for other groups) */
+.form-group {
+  position: relative;
+}
+
+/* Target only the input that has a following .toggle-password.
+   This ensures we only change padding for the password input. */
+.form-group .toggle-password,
+.form-group input + .toggle-password {
+  /* no-op here, just for selector clarity */
+}
+
+/* Give the input space on the right so text/placeholder never overlaps the icon.
+   This selector applies to any input inside a .form-group that contains a .toggle-password */
+.form-group .toggle-password + * {}
+
+/* Safer approach: increase right padding on all inputs inside .form-group
+   that also contain the toggle icon (this won't affect inputs without the icon
+   because they keep the same visual but still OK). */
+.form-group input {
+  /* keep other properties intact; only ensure box-sizing and padding-right */
+  box-sizing: border-box;
+  padding-right: 2.6rem; /* room for the icon (adjust slightly if needed) */
+}
+
+/* Position the eye icon inside the input (right side) */
+/* .toggle-password {
+  position: absolute;
+  right: 12px;                /* distance from right edge of popup */
+  /* top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.15rem;         /* size of the eye */
+  /* cursor: pointer;
+  user-select: none;
+  color: #3674b5; */
+  /* z-index: 5;                 /* stay on top of input
+  line-height: 1; */
+  /* padding: 2px;               small click area */
+  /* display: inline-flex; */
+  /* align-items: center; */ */
+  /* justify-content: center; */
+/* }  */ 
+
+/* make hover color subtle */
+.toggle-password:hover {
+  color: #2f63a4;
+}
+
+/* Accessibility: increase clickable area on small screens */
+@media (max-width: 420px) {
+  /* .toggle-password {
+    right: 10px;
+    font-size: 1.25rem;
+    padding: 6px;
+  } */
+
+  .form-group input {
+    padding-right: 3rem;
+  }
+}
+/* --- Fix eye icon position inside password input --- */
+
+/* Make password field a positioning container */
+.form-group:last-of-type {
+  position: relative;
+}
+
+/* Give space inside the input for the eye icon */
+.form-group:last-of-type input {
+  padding-right: 2.8rem; /* space for icon */
+  box-sizing: border-box;
+}
+
+/* Place the eye icon perfectly inside the password box */
+.form-group:last-of-type .toggle-password {
+  position: absolute;
+  right: 12px;             /* distance from right border */
+  top: 50%;                /* center vertically */
+  transform: translateY(-50%);
+  font-size: 1.3rem;
+  color: #3674b5;
+  cursor: pointer;
+  user-select: none;
+  z-index: 10;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-group:last-of-type .toggle-password:hover {
+  color: #2f63a4;
+}
+
+
+

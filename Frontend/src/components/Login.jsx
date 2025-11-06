@@ -112,7 +112,7 @@ const Login = ({ closePopup }) => {
 
           <div className="form-group">
             <label>Password</label>
-            <div className="password-container">
+            <div className="pass-container">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
