@@ -6,7 +6,6 @@ import User from "../models/User.js";
 import { verifyToken } from "../middleware/authMiddleware.js";
 
 dotenv.config();
-
 const router = express.Router();
 
 // 🟢 SIGNUP
@@ -15,8 +14,7 @@ router.post("/signup", async (req, res) => {
     const { firstName, lastName, userId, email, phone, password, role } = req.body;
 
     const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return res.status(400).json({ message: "Email already registered" });
+    if (existingUser) return res.status(400).json({ message: "Email already registered" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -58,11 +56,9 @@ router.post("/login", async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: "Invalid password" });
 
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
 
     res.status(200).json({
       message: "Login successful",
@@ -74,6 +70,7 @@ router.post("/login", async (req, res) => {
         email: user.email,
         phone: user.phone,
         userId: user.userId,
+        profileImage: user.profileImage,
       },
       token,
     });
@@ -83,7 +80,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// 🟢 CHANGE PASSWORD (Protected)
+// 🟢 CHANGE PASSWORD
 router.put("/change-password", verifyToken, async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
@@ -92,8 +89,7 @@ router.put("/change-password", verifyToken, async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const isMatch = await bcrypt.compare(oldPassword, user.password);
-    if (!isMatch)
-      return res.status(400).json({ message: "Old password is incorrect" });
+    if (!isMatch) return res.status(400).json({ message: "Old password incorrect" });
 
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(newPassword, salt);
@@ -106,16 +102,14 @@ router.put("/change-password", verifyToken, async (req, res) => {
   }
 });
 
-// 🟢 UPDATE USER DETAILS (Protected)
+// 🟢 UPDATE USER (with image)
 router.put("/update/:id", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
     const updatedData = req.body;
 
     if (updatedData.password) {
-      return res
-        .status(400)
-        .json({ message: "Password cannot be updated here" });
+      return res.status(400).json({ message: "Password cannot be updated here" });
     }
 
     const updatedUser = await User.findByIdAndUpdate(id, updatedData, {
@@ -123,9 +117,7 @@ router.put("/update/:id", verifyToken, async (req, res) => {
       runValidators: true,
     }).select("-password");
 
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    if (!updatedUser) return res.status(404).json({ message: "User not found" });
 
     res.status(200).json({
       message: "User profile updated successfully",
@@ -137,7 +129,7 @@ router.put("/update/:id", verifyToken, async (req, res) => {
   }
 });
 
-// 🟢 GET ALL USERS (Protected)
+// 🟢 GET ALL USERS
 router.get("/users", verifyToken, async (req, res) => {
   try {
     const users = await User.find().select("-password");
@@ -148,46 +140,15 @@ router.get("/users", verifyToken, async (req, res) => {
   }
 });
 
-// 🟢 GET SINGLE USER BY ID (Protected) → For Profile Page
+// 🟢 GET SINGLE USER BY ID
 router.get("/:id", verifyToken, async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select("-password");
-    if (!user)
-      return res.status(404).json({ message: "User not found" });
-
+    if (!user) return res.status(404).json({ message: "User not found" });
     res.status(200).json(user);
   } catch (error) {
     console.error("Error fetching user:", error);
     res.status(500).json({ message: "Server error while fetching user" });
-  }
-});
-// 🟢 UPDATE USER DETAILS (Protected)
-router.put("/update/:id", verifyToken, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updatedData = req.body;
-
-    if (updatedData.password) {
-      return res.status(400).json({ message: "Password cannot be updated here" });
-    }
-
-    // Include profileImage if sent
-    const updatedUser = await User.findByIdAndUpdate(id, updatedData, {
-      new: true,
-      runValidators: true,
-    }).select("-password");
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.status(200).json({
-      message: "User profile updated successfully",
-      user: updatedUser,
-    });
-  } catch (error) {
-    console.error("Update user error:", error);
-    res.status(500).json({ message: "Server error while updating profile" });
   }
 });
 
