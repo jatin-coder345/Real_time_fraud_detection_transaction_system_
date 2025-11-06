@@ -16,7 +16,9 @@ import Aapis from "./components/Aapis";
 import Ahelp from "./components/Ahelp";
 import Asettings from "./components/Asettings";
 import  AdminLiveTransactions from "./components/AdminLiveTransactions";
+import Profile from "./components/Profile";
 import PageNotFound from "./components/PageNotFound";
+
 
 
 
@@ -65,6 +67,8 @@ function App() {
         <Route path="/ahelp" element={<Ahelp />} />
         <Route path="/asettings" element={<Asettings />} />
         <Route path="/AdminLiveTransactions" element={<AdminLiveTransactions />} />
+          
+         <Route path="/Aprofile" element={<Profile />} />
 
                 {/* ✅ Catch-all 404 route */}
         <Route path="*" element={<PageNotFound />} />

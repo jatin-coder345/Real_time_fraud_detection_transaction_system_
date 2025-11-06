@@ -14,8 +14,6 @@ import {
   FaTable,
   FaSignOutAlt,
   FaQuestionCircle,
-  FaUsers,
-  FaPlug,
 } from "react-icons/fa";
 import {
   LineChart,
@@ -31,7 +29,6 @@ import {
 } from "recharts";
 
 const socket = io("http://localhost:5000");
-
 const COLORS = ["#22c55e", "#ef4444"]; // Success = Green, Failed = Red
 
 const UserDashboard = () => {
@@ -126,10 +123,8 @@ const UserDashboard = () => {
 
   // ===== Sidebar and Logout =====
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout?")) {
-      localStorage.clear();
-      navigate("/login");
-    }
+    localStorage.clear();
+    navigate("/home");
   };
 
   const handleMenuClick = (menu, path) => {
@@ -172,14 +167,14 @@ const UserDashboard = () => {
             <FaUserCircle className="popup-avatar" />
             <h4>{user?.firstName || "Guest User"}</h4>
             <p>{user?.loginId || "user@example.com"}</p>
-            <button onClick={() => alert("Profile page coming soon!")}>
+            <button onClick={() => navigate("/Aprofile")}>
               View Profile
             </button>
-            <button
+            {/* <button
               onClick={() => handleMenuClick("settings", "/settings")}
             >
               Settings
-            </button>
+            </button> */}
             <button className="logout-popup" onClick={handleLogout}>
               <FaSignOutAlt /> Logout
             </button>
@@ -212,12 +207,6 @@ const UserDashboard = () => {
             onClick={() => handleMenuClick("help", "/help")}
           >
             <FaQuestionCircle /> Help & Support
-          </li>
-          <li
-            className={getActiveMenu() === "settings" ? "active" : ""}
-            onClick={() => handleMenuClick("settings", "/settings")}
-          >
-            <FaCog /> Settings
           </li>
           <li
             className={getActiveMenu() === "change-password" ? "active" : ""}

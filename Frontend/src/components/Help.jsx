@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ Added
+import React, { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import emailjs from "@emailjs/browser";
 import "./Help.css";
 import {
   Mail,
-  MessageCircle,
   BookOpen,
   Phone,
   Send,
@@ -12,45 +12,50 @@ import {
 import {
   FaChartBar,
   FaExchangeAlt,
-  FaCog,
+  FaLock,
   FaTachometerAlt,
   FaUserCircle,
   FaSignOutAlt,
   FaQuestionCircle,
-  FaLock,
 } from "react-icons/fa";
 
 const Help = () => {
-  const navigate = useNavigate(); // ✅ Initialize navigate
-
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
-
+  const navigate = useNavigate();
+  const form = useRef();
+  const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  // ✅ Handle input changes
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  // ✅ EmailJS Credentials
+  const SERVICE_ID = "narmada123";
+  const TEMPLATE_ID = "template_6alm0bi";
+  const PUBLIC_KEY = "wu0Kidkg7ONEiz4XE";
 
-  // ✅ Handle form submit
-  const handleSubmit = (e) => {
+  // ✅ Send Email Function
+  const sendEmail = (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 4000);
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    setLoading(true);
+
+    emailjs
+      .sendForm(SERVICE_ID, TEMPLATE_ID, form.current, PUBLIC_KEY)
+      .then(
+        (result) => {
+          console.log("✅ Email Sent:", result.text);
+          setSubmitted(true);
+          e.target.reset();
+          setLoading(false);
+        },
+        (error) => {
+          console.error("❌ Email Error:", error);
+          alert("Failed to send message. Please check your EmailJS IDs.");
+          setLoading(false);
+        }
+      );
   };
 
-  // ✅ Fixed logout functionality
+  // ✅ Logout without popup
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout?")) {
-      localStorage.clear();
-      navigate("/login");
-    }
+    localStorage.clear();
+    navigate("/home"); // instant redirect, no confirm popup
   };
 
   return (
@@ -59,8 +64,8 @@ const Help = () => {
       <aside className="sidebar">
         <div className="user-section">
           <FaUserCircle className="user-icon" />
-          <h3>Welcome</h3>
-          <p>User Panel</p>
+          {/* <h3>Welcome</h3>
+          <p>User Panel</p> */}
         </div>
 
         <nav className="nav-menu">
@@ -76,9 +81,6 @@ const Help = () => {
           <a href="/Help" className="active">
             <FaQuestionCircle /> Help & Support
           </a>
-          <a href="/Settings">
-            <FaCog /> Settings
-          </a>
           <a href="/Change-Password">
             <FaLock /> Change Password
           </a>
@@ -92,63 +94,56 @@ const Help = () => {
       {/* === MAIN CONTENT === */}
       <main className="help-main">
         <div className="help-page">
+          {/* === HEADER === */}
           <header className="help-header">
             <Headphones className="header-icon" />
             <h1>Help & Support Center</h1>
             <p>
-              Need assistance? We’re always here to help you with product issues,
-              fraud alerts, or setup guidance.
+              Need assistance? We're here to help you with issues, fraud alerts,
+              or setup guidance. Contact us using the details below or send a message directly.
             </p>
           </header>
 
+          {/* === SUPPORT INFO + FORM === */}
           <section className="help-section">
-            {/* --- LEFT: Support Info --- */}
             <div className="help-info">
+              {/* Email */}
               <div className="info-card">
                 <Mail className="icon" />
                 <h3>Email Support</h3>
-                <p>Reach out anytime for help.</p>
+                <p>Reach us anytime for help or queries.</p>
                 <span>support@fraudshield.ai</span>
               </div>
 
+              {/* Phone */}
               <div className="info-card">
                 <Phone className="icon" />
                 <h3>Call Us</h3>
-                <p>We’re available Mon–Fri, 9AM–6PM.</p>
+                <p>Available Mon–Fri, 9AM–6PM.</p>
                 <span>+91 98765 43210</span>
               </div>
 
-              <div className="info-card">
-                <MessageCircle className="icon" />
-                <h3>Live Chat</h3>
-                <p>Chat instantly with our experts.</p>
-                <button className="chat-btn">Start Chat</button>
-              </div>
-
+              {/* Knowledge Base */}
               <div className="info-card">
                 <BookOpen className="icon" />
                 <h3>Knowledge Base</h3>
-                <p>
-                  Explore FAQs, fraud prevention guides, and video tutorials.
-                </p>
-                <button className="learn-btn">Visit Knowledge Hub</button>
+                <p>Explore FAQs, user guides, and tutorials.</p>
+                <button className="learn-btn">Visit Hub</button>
               </div>
             </div>
 
-            {/* --- RIGHT: Contact Form --- */}
+            {/* === CONTACT FORM === */}
             <div className="help-form">
               <h2>Contact Support</h2>
-              <p>Submit your query and our team will get back to you shortly.</p>
+              <p>Submit your issue and our team will respond shortly.</p>
 
-              <form onSubmit={handleSubmit}>
+              <form ref={form} onSubmit={sendEmail}>
                 <div className="form-group">
                   <label>Full Name</label>
                   <input
                     type="text"
-                    name="name"
-                    value={formData.name}
+                    name="from_name"
                     placeholder="John Doe"
-                    onChange={handleChange}
                     required
                   />
                 </div>
@@ -157,10 +152,8 @@ const Help = () => {
                   <label>Email Address</label>
                   <input
                     type="email"
-                    name="email"
-                    value={formData.email}
+                    name="from_email"
                     placeholder="john@example.com"
-                    onChange={handleChange}
                     required
                   />
                 </div>
@@ -170,9 +163,7 @@ const Help = () => {
                   <input
                     type="text"
                     name="subject"
-                    value={formData.subject}
-                    placeholder="Issue topic"
-                    onChange={handleChange}
+                    placeholder="Issue with transaction"
                     required
                   />
                 </div>
@@ -181,16 +172,14 @@ const Help = () => {
                   <label>Your Message</label>
                   <textarea
                     name="message"
-                    value={formData.message}
-                    placeholder="Describe your issue..."
                     rows="5"
-                    onChange={handleChange}
+                    placeholder="Describe your issue..."
                     required
-                  />
+                  ></textarea>
                 </div>
 
-                <button type="submit" className="submit-btn">
-                  <Send size={16} /> &nbsp; Send Message
+                <button type="submit" className="submit-btn" disabled={loading}>
+                  {loading ? "Sending..." : <><Send size={16} /> Send Message</>}
                 </button>
 
                 {submitted && (

@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Aapis.css";
+import {
+  FaTachometerAlt,
+  FaUsers,
+  FaPlug,
+  FaSignOutAlt,
+  FaExchangeAlt,
+  FaUserCircle,
+  FaShieldAlt,
+  FaUserShield,
+} from "react-icons/fa";
 
 const Aapis = () => {
   const navigate = useNavigate();
@@ -13,7 +23,7 @@ const Aapis = () => {
     const fetchFakeApis = async () => {
       try {
         setLoading(true);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1200));
 
         const fakeApiData = [
           {
@@ -77,34 +87,51 @@ const Aapis = () => {
     <div className="admin-dashboard fullscreen">
       {/* ===== Sidebar ===== */}
       <aside className="admin-sidebar fullscreen-sidebar">
-        <h2 className="logo">Fraud Detection</h2>
+        <div className="sidebar-header">
+          <FaShieldAlt className="sidebar-logo-icon" />
+          <h2 className="logo-text">Fraud Detection</h2>
+        </div>
+
+        {/* <h3 className="admin-name">
+          <FaUserShield /> Admin Panel 🛡️
+        </h3> */}
+
         <ul className="menu">
-          <li onClick={() => navigate("/Admindashboard")}>Dashboard</li>
-          <li onClick={() => navigate("/Ausers")}>Users</li>
-           <li onClick={() => navigate("/AdminLiveTransactions")}>
-            Live Transactions
+          <li onClick={() => navigate("/admindashboard")}>
+             <FaTachometerAlt className="menu-icon" /> Dashboard
           </li>
-          <li onClick={() => navigate("/Aapis")} className="active">
-            APIs
+          <li onClick={() => navigate("/Aprofile")}>
+             <FaUserCircle className="menu-icon" /> Profile
           </li>
-         
-          <li onClick={() => navigate("/Ahelp")}>Help & Support</li>
-          <li onClick={() => navigate("/Asettings")}>Settings</li>
-          <li onClick={handleLogout}>Logout</li>
+          <li onClick={() => navigate("/Ausers")}>
+             <FaUsers className="menu-icon" /> Users
+          </li>
+          <li onClick={() => navigate("/AdminLiveTransactions")}>
+             <FaExchangeAlt className="menu-icon" /> Live Transactions
+          </li>
+          <li className="active" onClick={() => navigate("/Aapis")}>
+             <FaPlug className="menu-icon" /> APIs
+          </li>
+          <li onClick={handleLogout}>
+             <FaSignOutAlt className="menu-icon" /> Logout
+          </li>
         </ul>
       </aside>
 
       {/* ===== Main Content ===== */}
       <main className="admin-content fullscreen-content">
         <header className="admin-header">
-          <h1>API Management</h1>
+          <h1>🔌 API Management</h1>
           <p>Manage system integrations and active API endpoints.</p>
         </header>
 
         {/* ===== API Table Section ===== */}
         <section className="api-section">
           {loading ? (
-            <p className="loading">Loading APIs...</p>
+            <div className="loader-container">
+              <div className="spinner"></div>
+              <p className="loading-text">Loading APIs...</p>
+            </div>
           ) : message ? (
             <p className="error">{message}</p>
           ) : (
@@ -134,7 +161,7 @@ const Aapis = () => {
                             api.isActive ? "active" : "inactive"
                           }`}
                         >
-                          {api.isActive ? "Active" : "Inactive"}
+                          {api.isActive ? "✅ Active" : "❌ Inactive"}
                         </span>
                       </td>
                     </tr>

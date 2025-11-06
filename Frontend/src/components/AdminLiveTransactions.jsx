@@ -12,6 +12,7 @@ import {
   FaSignOutAlt,
   FaShieldAlt,
   FaUserShield,
+  FaUserCircle
 } from "react-icons/fa";
 import "./AdminLiveTransactions.css";
 
@@ -69,14 +70,17 @@ const AdminLiveTransactions = () => {
           <h2 className="logo-text">Fraud Detection</h2>
         </div>
 
-        <h3 className="admin-name">
+        {/* <h3 className="admin-name">
           <FaUserShield /> Admin: {admin ? admin.firstName : "Admin"}
-        </h3>
+        </h3> */}
 
         <ul className="menu">
           <li onClick={() => navigate("/adminDashboard")}>
             <FaTachometerAlt className="menu-icon" /> Dashboard
           </li>
+           <li onClick={() => navigate("/Aprofile")}>
+            <FaUserCircle className="menu-icon" /> Profile
+           </li>
           <li onClick={() => navigate("/Ausers")}>
             <FaUsers className="menu-icon" /> Users
           </li>
@@ -86,12 +90,12 @@ const AdminLiveTransactions = () => {
           <li onClick={() => navigate("/Aapis")}>
             <FaPlug className="menu-icon" /> APIs
           </li>
-          <li onClick={() => navigate("/Ahelp")}>
+          {/* <li onClick={() => navigate("/Ahelp")}>
             <FaLifeRing className="menu-icon" /> Help & Support
           </li>
           <li onClick={() => navigate("/Asettings")}>
             <FaCog className="menu-icon" /> Settings
-          </li>
+          </li> */}
           <li onClick={handleLogout}>
             <FaSignOutAlt className="menu-icon" /> Logout
           </li>

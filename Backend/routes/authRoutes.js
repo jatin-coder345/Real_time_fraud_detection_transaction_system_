@@ -3,8 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import User from "../models/User.js";
-import { verifyToken } from "../middleware/authMiddleware.js"; // Named export version
-
+import { verifyToken } from "../middleware/authMiddleware.js";
 
 dotenv.config();
 
@@ -15,7 +14,6 @@ router.post("/signup", async (req, res) => {
   try {
     const { firstName, lastName, userId, email, phone, password, role } = req.body;
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser)
       return res.status(400).json({ message: "Email already registered" });
@@ -33,10 +31,9 @@ router.post("/signup", async (req, res) => {
     });
 
     await newUser.save();
-
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
-    console.error(error);
+    console.error("Signup error:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -46,26 +43,25 @@ router.post("/login", async (req, res) => {
   try {
     const { loginId, password, role } = req.body;
 
-    // Match email or userId
     const user =
       (await User.findOne({ email: loginId })) ||
       (await User.findOne({ userId: loginId }));
 
     if (!user) return res.status(400).json({ message: "User not found" });
 
-    // Check role
     if (user.role !== role) {
-      return res.status(403).json({ message: `Invalid role selected for ${user.firstName}` });
+      return res
+        .status(403)
+        .json({ message: `Invalid role selected for ${user.firstName}` });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: "Invalid password" });
 
-    // ✅ Generate JWT token
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" } // Token valid for 7 days
+      { expiresIn: "7d" }
     );
 
     res.status(200).json({
@@ -73,19 +69,20 @@ router.post("/login", async (req, res) => {
       user: {
         _id: user._id,
         firstName: user.firstName,
+        lastName: user.lastName,
         role: user.role,
         email: user.email,
-        loginId: user.userId || user.email,
+        phone: user.phone,
+        userId: user.userId,
       },
       token,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Login error:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
 
-// 🟢 CHANGE PASSWORD (Protected)
 // 🟢 CHANGE PASSWORD (Protected)
 router.put("/change-password", verifyToken, async (req, res) => {
   try {
@@ -109,11 +106,40 @@ router.put("/change-password", verifyToken, async (req, res) => {
   }
 });
 
+// 🟢 UPDATE USER DETAILS (Protected)
+router.put("/update/:id", verifyToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedData = req.body;
+
+    if (updatedData.password) {
+      return res
+        .status(400)
+        .json({ message: "Password cannot be updated here" });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(id, updatedData, {
+      new: true,
+      runValidators: true,
+    }).select("-password");
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "User profile updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Update user error:", error);
+    res.status(500).json({ message: "Server error while updating profile" });
+  }
+});
 
 // 🟢 GET ALL USERS (Protected)
 router.get("/users", verifyToken, async (req, res) => {
   try {
-    // Fetch all users but exclude their password
     const users = await User.find().select("-password");
     res.status(200).json(users);
   } catch (error) {
@@ -122,5 +148,18 @@ router.get("/users", verifyToken, async (req, res) => {
   }
 });
 
+// 🟢 GET SINGLE USER BY ID (Protected) → For Profile Page
+router.get("/:id", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select("-password");
+    if (!user)
+      return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ message: "Server error while fetching user" });
+  }
+});
 
 export default router;

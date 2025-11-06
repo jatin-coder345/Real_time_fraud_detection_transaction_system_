@@ -13,11 +13,11 @@ import {
 import "./Transactions.css";
 
 const Transactions = () => {
+
+  // ✅ Updated logout — no popup, direct redirect
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout?")) {
-      localStorage.clear();
-      window.location.href = "/login";
-    }
+    localStorage.clear();
+    window.location.href = "/home"; // instant redirect
   };
 
   return (
@@ -35,10 +35,11 @@ const Transactions = () => {
           <a href="/Transactions" className="active"><FaExchangeAlt /> Transactions</a>
           <a href="/Reports"><FaChartBar /> Reports</a>
           <a href="/Help"><FaQuestionCircle /> Help & Support</a>
-          <a href="/Settings"><FaCog /> Settings</a>
+          {/* <a href="/Settings"><FaCog /> Settings</a> */}
           <a href="/Change-Password"><FaLock /> Change Password</a>
         </nav>
 
+        {/* === Logout Button === */}
         <button className="logout-btn" onClick={handleLogout}>
           <FaSignOutAlt /> Logout
         </button>

@@ -21,7 +21,7 @@
   font-size: 1.4rem;
   font-weight: 700;
   margin-bottom: 2rem;
-  color: #38bdf8;
+  color: whitesmoke;
 }
 
 .menu {
@@ -158,4 +158,34 @@
   margin-top: 2rem;
   color: #475569;
   font-size: 1rem;
+}
+
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+}
+
+.spinner {
+  width: 55px;
+  height: 55px;
+  border: 5px solid #e2e8f0;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  margin-top: 15px;
+  font-size: 1.1rem;
+  color: #475569;
+  font-weight: 500;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

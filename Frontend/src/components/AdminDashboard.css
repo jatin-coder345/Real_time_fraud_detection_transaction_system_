@@ -1,31 +1,53 @@
-/* ===== Layout ===== */
+/* 🌐 Overall Layout */
 .admin-dashboard {
   display: flex;
   min-height: 100vh;
-  background-color: #f9fafc;
   font-family: "Poppins", sans-serif;
+  background-color: #f8fafc;
 }
 
-/* ===== Sidebar ===== */
+/* 🧱 Sidebar */
 .admin-sidebar {
   width: 250px;
   background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
   color: #fff;
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  position: fixed;              /* ✅ keeps sidebar fixed */
+  padding: 25px 20px;
+  position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
-  overflow-y: auto;             /* ✅ makes sidebar scrollable if too tall */
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #475569 transparent;
 }
 
-.logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 30px;
-  text-align: center;
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.sidebar-logo-icon {
+  font-size: 1.8rem;
+  color: #60a5fa;
+}
+
+.logo-text {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.admin-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  color: #9ca3af;
 }
 
 .menu {
@@ -35,85 +57,98 @@
 }
 
 .menu li {
-  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 10px 14px;
   margin-bottom: 10px;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: 0.3s;
-  text-align: center;
+  transition: all 0.3s ease;
+  color: #d1d5db;
 }
 
 .menu li:hover,
 .menu li.active {
-  background: #334155;
+  background: #2563eb;
+  color: #fff;
+  transform: translateX(4px);
 }
 
-/* ===== Main Content ===== */
+.menu-icon {
+  font-size: 1.1rem;
+}
+
+/* 📊 Main Content */
 .admin-content {
   flex: 1;
-  margin-left: 250px;           /* ✅ pushes content beside sidebar */
+  margin-left: 250px;
   padding: 30px;
   height: 100vh;
-  overflow-y: auto;             /* ✅ allows vertical scrolling */
+  overflow-y: auto;
   box-sizing: border-box;
 }
 
 .admin-header h1 {
   font-size: 2rem;
   font-weight: 600;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
+  color: #1e293b;
 }
 
 .admin-header p {
-  color: #6b7280;
-  margin-bottom: 20px;
+  color: #64748b;
+  margin-bottom: 25px;
 }
 
-/* ===== Stats Section ===== */
+/* 📈 Stats Section */
 .stats-sectionn {
   display: flex;
   gap: 20px;
   margin-bottom: 30px;
   flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .stat-card {
   flex: 1;
+  min-width: 250px;
   background: #ffffff;
   padding: 25px;
   border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.1);
   text-align: center;
-  transition: 0.3s;
-  min-width: 250px;
+  transition: 0.3s ease;
 }
 
 .stat-card:hover {
-  transform: scale(1.03);
+  transform: translateY(-5px);
 }
 
 .stat-card h3 {
-  font-size: 1.2rem;
-  color: #374151;
+  font-size: 1.1rem;
+  color: #475569;
 }
 
 .stat-card p {
   font-size: 2rem;
   font-weight: bold;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .stat-card.users {
   border-left: 6px solid #3b82f6;
 }
+
 .stat-card.transactions {
   border-left: 6px solid #10b981;
 }
+
 .stat-card.fraud {
   border-left: 6px solid #ef4444;
 }
 
-/* ===== Charts ===== */
+/* 📉 Charts */
 .chart-container {
   display: flex;
   flex-wrap: wrap;
@@ -124,106 +159,116 @@
 .chart-card {
   flex: 1;
   background: #fff;
-  padding: 20px;
+  padding: 25px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  min-width: 400px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  min-width: 380px;
+  transition: transform 0.3s ease;
 }
 
-/* ===== Table Section ===== */
+.chart-card:hover {
+  transform: scale(1.02);
+}
+
+.chart-card h2 {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  color: #1e293b;
+}
+
+/* 🧾 Table Section */
 .table-section {
   background: #fff;
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+}
+
+.table-section h2 {
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+  color: #1e293b;
 }
 
 .transaction-table {
   width: 100%;
   border-collapse: collapse;
+  text-align: center;
+  min-width: 600px;
 }
 
 .transaction-table th,
 .transaction-table td {
-  padding: 12px;
+  padding: 12px 10px;
   border-bottom: 1px solid #e5e7eb;
-  text-align: center;
 }
 
 .transaction-table th {
   background: #f3f4f6;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.transaction-table tr:hover {
+  background: #f9fafb;
+  transition: background 0.3s ease;
 }
 
 .transaction-table .fraud {
   color: #e11d48;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .transaction-table .legit {
   color: #10b981;
-  font-weight: bold;
-}
-
-/* Sidebar Enhancements */
-.admin-sidebar {
-  background: linear-gradient(180deg, #111827 0%, #1f2937 100%);
-  color: #f9fafb;
-  width: 240px;
-  padding: 2rem 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-.sidebar-header {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  margin-bottom: 2rem;
-}
-
-.sidebar-logo-icon {
-  font-size: 1.8rem;
-  color: #60a5fa;
-}
-
-.logo-text {
-  font-size: 1.3rem;
   font-weight: 600;
 }
 
-.admin-name {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.95rem;
-  margin-bottom: 1.5rem;
-  color: #9ca3af;
+/* ⚡ Scrollbars */
+.admin-sidebar::-webkit-scrollbar,
+.admin-content::-webkit-scrollbar {
+  width: 8px;
 }
 
-.menu {
-  list-style: none;
-  padding: 0;
+.admin-sidebar::-webkit-scrollbar-thumb,
+.admin-content::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 4px;
 }
 
-.menu li {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.8rem 1rem;
-  border-radius: 8px;
-  margin-bottom: 0.6rem;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.3s ease;
+.admin-sidebar::-webkit-scrollbar-thumb:hover,
+.admin-content::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
 }
 
-.menu li:hover,
-.menu li.active {
-  background: #2563eb;
-  color: #fff;
-}
+/* 📱 Responsive */
+@media (max-width: 1024px) {
+  .chart-container {
+    flex-direction: column;
+  }
 
-.menu-icon {
-  font-size: 1.1rem;
+  .admin-content {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .admin-sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .menu li {
+    margin: 4px;
+    font-size: 0.9rem;
+  }
 }
